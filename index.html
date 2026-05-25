@@ -379,10 +379,7 @@ function barHTML(b,isStart,isEnd){
   // Continuation bar (booking started previous week)
   if(!isStart){
     return `<div class="bar" style="${barStyle}" onclick="editBooking(${b.id})">
-      <div class="bar-chips">
-        <span></span>
-        ${isEnd?`<span class="chip-out">OUT</span>`:`<span></span>`}
-      </div>
+
       <div class="bar-cont" style="color:${nameCol}">↳ ${b.name}</div>
     </div>`;
   }
@@ -400,7 +397,6 @@ function barHTML(b,isStart,isEnd){
   return `<div class="bar" style="${barStyle}" onclick="editBooking(${b.id})">
     <div class="bar-chips">
       <span class="chip-in" style="background:${chipBg}">IN</span>
-      ${isEnd?`<span class="chip-out">OUT</span>`:`<span></span>`}
     </div>
     <div class="bar-name" style="color:${nameCol}">${b.name}</div>
     <div class="bar-nights">${n} malam</div>
@@ -499,23 +495,48 @@ function renderCalendar(){
       const maxLane=wBks.length?Math.max(...wBks.map(b=>b.lane)):-1;
       for(let lane=0;lane<=maxLane;lane++){
         const occ=new Array(7).fill(null);
+        // Track checkout columns for OUT indicators
+        const outCols={};
         wBks.filter(b=>b.lane===lane).forEach(b=>{
+          // Bar spans ci to day-before-checkout (the nights)
           const bS=b.ci>=wS?b.ci:wS;
-          const bE=b.co<=wE?b.co:wE;
+          const lastNight=addD(b.co,-1);
+          const bE=lastNight<=wE?lastNight:wE;
           const cS=dates.indexOf(bS);
-          // If checkout is beyond this week, extend bar to col 6 (Sunday)
-          const cE=b.co<=wE?dates.indexOf(bE):6;
+          // If bar extends beyond this week, go to col 6
+          const cE=lastNight<=wE?dates.indexOf(bE):6;
           if(cS===-1||cE<cS)return;
-          for(let c=cS;c<=cE;c++) occ[c]={b,cS,cE,isStart:b.ci>=wS,isEnd:b.co<=wNext};
+          for(let c=cS;c<=cE;c++) occ[c]={b,cS,cE,isStart:b.ci>=wS,isEnd:false};
+          // Track checkout col for OUT indicator (if checkout is in this week)
+          const coCol=dates.indexOf(b.co);
+          if(coCol!==-1) outCols[coCol]={b,lane};
         });
         tbody+="<tr>";
         let ci=0;
         while(ci<7){
-          if(!occ[ci]){tbody+=`<td class="bc"></td>`;ci++;}
-          else{
+          if(!occ[ci]){
+            // Check if this col has an OUT indicator
+            if(outCols[ci]){
+              const ob=outCols[ci].b;
+              const p=PAL[ob.id%PAL.length];
+              const isUnclear=ob.status==="unclear";
+              const chipBg=isUnclear?"#d97706":p.bd;
+              tbody+=`<td class="bc">
+                <div style="border-radius:6px;padding:5px 6px 6px;background:${isUnclear?"#fef9c3":p.bg};border-top:2px solid ${isUnclear?"#f59e0b":p.bd};border-bottom:2px solid ${isUnclear?"#f59e0b":p.bd};border-left:2px solid ${isUnclear?"#f59e0b":p.bd};border-right:2px solid ${isUnclear?"#f59e0b":p.bd};">
+                  <div style="display:flex;justify-content:flex-end;margin-bottom:3px">
+                    <span class="chip-out">OUT</span>
+                  </div>
+                  <div style="font-size:9.5px;font-weight:600;color:${isUnclear?"#92400e":p.tx};word-break:break-word;opacity:.8">${ob.name}</div>
+                </div>
+              </td>`;
+            } else {
+              tbody+=`<td class="bc"></td>`;
+            }
+            ci++;
+          } else {
             const{b,cS,cE,isStart,isEnd}=occ[ci];
             const span=cE-cS+1;
-            tbody+=`<td class="bc" colspan="${span}">${barHTML(b,isStart,isEnd)}</td>`;
+            tbody+=`<td class="bc" colspan="${span}">${barHTML(b,isStart,false)}</td>`;
             ci+=span;
           }
         }
