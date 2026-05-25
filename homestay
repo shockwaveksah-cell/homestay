@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Onde-onde Homestay 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f1e35;font-family:'Plus Jakarta Sans',sans-serif;padding:0 0 60px;font-size:14px}
+
+/* ── HEADER ── */
+.app-header{background:linear-gradient(135deg,#1e3a5f,#2d6a9f);padding:16px;text-align:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.app-header h1{color:#fff;font-size:20px;font-weight:800;margin:4px 0 2px}
+.app-header p{color:rgba(255,255,255,.5);font-size:10px}
+
+/* ── CONTROLS ── */
+.controls{max-width:1040px;margin:12px auto;padding:0 10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.ctrl-left{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctrl-right{display:flex;gap:8px;align-items:center}
+.btn{font-size:11px;font-weight:700;padding:8px 14px;border-radius:8px;border:none;
+  cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn:active{opacity:.7}
+.btn-green{background:#16a34a;color:#fff}
+.btn-blue{background:#2563eb;color:#fff}
+.btn-red{background:#dc2626;color:#fff}
+.btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.btn-amber{background:#d97706;color:#fff}
+select{font-size:11px;font-weight:600;padding:7px 8px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.12);
+  color:#fff;cursor:pointer}
+select option{background:#1e3a5f;color:#fff}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;
+  padding:0 10px;margin-bottom:12px}
+.leg{display:flex;align-items:center;gap:4px;color:rgba(255,255,255,.6);font-size:9px}
+.leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+/* ── OUTSTANDING PANEL ── */
+.out-wrap{max-width:1040px;margin:0 auto 16px;padding:0 10px}
+.out-panel{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.out-hdr{background:#7f1d1d;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.out-hdr h2{color:#fff;font-size:14px;font-weight:800}
+.out-total{color:#fca5a5;font-size:12px;font-weight:700}
+.out-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.out-row:last-child{border-bottom:none}
+.out-row:nth-child(even){background:#fafafa}
+.out-row:hover{background:#fef2f2}
+.out-swatch{width:4px;height:36px;border-radius:2px;flex-shrink:0}
+.out-info{flex:1;min-width:0}
+.out-name{font-size:11px;font-weight:700;color:#1e293b;word-break:break-word}
+.out-meta{font-size:9px;color:#64748b;margin-top:1px}
+.out-amounts{text-align:right;flex-shrink:0}
+.out-tot{font-size:9px;color:#4c1d95;font-weight:600}
+.out-dep{font-size:9px;color:#15803d;font-weight:600}
+.out-bal{font-size:12px;font-weight:800;color:#dc2626}
+
+/* ── MONTH CARD ── */
+.month-outer{max-width:1040px;margin:0 auto 28px;padding:0 10px}
+.month-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.month-hdr{background:#1e3a5f;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.month-hdr h2{color:#fff;font-size:16px;font-weight:800}
+.mhdr-leg{display:flex;gap:10px}
+.mhdr-leg span{display:flex;align-items:center;gap:3px;font-size:8px;color:rgba(255,255,255,.6)}
+.mhdr-leg i{width:7px;height:7px;border-radius:2px;display:inline-block;flex-shrink:0}
+
+/* ── CALENDAR TABLE ── */
+.cal{width:100%;table-layout:fixed;border-collapse:collapse}
+.cal th{background:#162d4e;text-align:center;padding:5px 0;font-size:9px;font-weight:700;
+  letter-spacing:.06em;color:rgba(255,255,255,.65);border-right:1px solid rgba(255,255,255,.06)}
+.cal th:last-child{border-right:none;color:#fca5a5}
+.cal td{vertical-align:top;padding:0;width:calc(100%/7)}
+
+/* Week label */
+.wk-lbl{background:#f1f5f9;border-top:1px solid #dde3ea;border-bottom:1px solid #dde3ea;
+  padding:2px 10px;font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.07em;
+  display:flex;align-items:center;gap:5px}
+.wk-pill{font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px}
+.wkph{background:#fef3c7;color:#92400e}
+.wksh{background:#ede9fe;color:#6d28d9}
+
+/* Date cells */
+.dc{border-right:1px solid #e8ecf0;border-bottom:1px solid #e8ecf0;
+  padding:4px 5px 3px;background:#fff;border-top:3px solid transparent;min-height:34px}
+.dc:last-child{border-right:none}
+.dc.dim{background:#f0f0f0}
+.dc.ph{background:#fffbeb;border-top-color:#f59e0b}
+.dc.sh{background:#f5f3ff;border-top-color:#8b5cf6}
+.dn{font-size:12px;font-weight:800;color:#1e293b;line-height:1}
+.dc.dim .dn{color:#bbb}
+.dc.sun .dn{color:#dc2626}
+.dc.ph .dn{color:#92400e}
+.dph{font-size:6.5px;font-weight:600;color:#92400e;margin-top:2px;line-height:1.3}
+.dsh{font-size:6.5px;font-weight:600;color:#6d28d9;margin-top:2px}
+
+/* Bar cells */
+.bc{background:#f8fafc;border-right:1px solid #e8ecf0;border-bottom:1px solid #e8ecf0;padding:2px}
+.bc:last-child{border-right:none}
+
+/* THE BAR */
+.bar{border-radius:6px;padding:5px 6px 6px;cursor:pointer;transition:filter .15s}
+.bar:hover{filter:brightness(.95)}
+/* Row 1: IN | OUT chips — two columns */
+.bar-chips{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:4px}
+.chip{font-size:8px;font-weight:800;color:#fff;padding:3px 0;border-radius:4px;text-align:center;display:block}
+.chip-out{background:#ef4444}
+/* Row 2+: details */
+.bar-name{font-size:10.5px;font-weight:700;line-height:1.3;word-break:break-word;margin-bottom:1px}
+.bar-nights{font-size:7.5px;color:#64748b;margin-bottom:3px}
+.binfo{font-size:8.5px;font-weight:700;padding:2px 5px;border-radius:4px;
+  border:1px solid transparent;line-height:1.4;word-break:break-word;margin-top:2px;display:block}
+.bi-unit{background:#e0f2fe;color:#0369a1;border-color:#bae6fd}
+.bi-tot{background:#ede9fe;color:#4c1d95;border-color:#c4b5fd}
+.bi-dep{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
+.bi-bal{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+.bi-paid{background:#d1fae5;color:#059669;border-color:#a7f3d0}
+.bi-note{background:#f3e8ff;color:#7c3aed;border-color:#e9d5ff;font-style:italic}
+.bi-unclear{background:#fef9c3;color:#92400e;border-color:#fde68a}
+.bar-cont{font-size:9.5px;font-weight:600;font-style:italic;opacity:.7;word-break:break-word;padding:4px 0}
+
+/* Week gap */
+.wk-gap{height:4px;background:#f0f4f8;border-bottom:2px solid #dde3ea}
+
+/* Month summary footer */
+.msum{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid #e2e8f0}
+.ms{padding:8px 4px;text-align:center;border-right:1px solid #e2e8f0}
+.ms:last-child{border-right:none}
+.ms:nth-child(odd){background:#f8fafc}
+.ms-icon{font-size:12px}
+.ms-val{font-size:10px;font-weight:800;color:#0f172a;margin-top:1px}
+.ms-lbl{font-size:6.5px;font-weight:600;color:#94a3b8;margin-top:1px;letter-spacing:.04em;text-transform:uppercase}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;
+  display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:480px;max-height:90vh;
+  overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-hdr{background:#1e3a5f;padding:14px 16px;border-radius:14px 14px 0 0;
+  display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
+.modal-hdr h3{color:#fff;font-size:15px;font-weight:800}
+.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;
+  width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;font-family:inherit}
+.modal-body{padding:16px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:#374151;margin-bottom:5px;display:block}
+.form-input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;
+  font-size:13px;font-family:inherit;color:#1e293b;transition:border-color .15s}
+.form-input:focus{outline:none;border-color:#3b82f6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;
+  font-size:13px;font-family:inherit;color:#1e293b;background:#fff;cursor:pointer}
+.form-select:focus{outline:none;border-color:#3b82f6}
+.balance-display{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;
+  padding:9px 12px;font-size:13px;color:#64748b;font-weight:600}
+.balance-display.owing{color:#dc2626}
+.balance-display.paid{color:#059669}
+.modal-footer{padding:12px 16px;border-top:1px solid #f1f5f9;display:flex;gap:8px;
+  position:sticky;bottom:0;background:#fff;border-radius:0 0 14px 14px}
+.btn-full{flex:1}
+.btn-danger-outline{background:#fff;color:#dc2626;border:1.5px solid #dc2626;font-size:11px;
+  font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit}
+.btn-danger-outline:hover{background:#fef2f2}
+
+/* Status badge */
+.status-badge{display:inline-block;font-size:8px;font-weight:700;padding:2px 6px;
+  border-radius:4px;margin-left:6px;vertical-align:middle}
+.status-active{background:#dbeafe;color:#1d4ed8}
+.status-paid{background:#d1fae5;color:#059669}
+.status-unclear{background:#fef9c3;color:#92400e}
+.status-cancelled{background:#fee2e2;color:#dc2626}
+
+/* Loading / Error */
+.loading{text-align:center;padding:48px 16px;color:rgba(255,255,255,.5);font-size:14px;line-height:1.8}
+.saving-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;
+  display:flex;align-items:center;justify-content:center}
+.saving-box{background:#fff;border-radius:12px;padding:24px 32px;text-align:center;font-weight:700;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div style="font-size:24px;margin-bottom:2px">🏡</div>
+  <h1>Onde-onde Homestay</h1>
+  <p>Selangor · Malaysia · 2026</p>
+</div>
+
+<!-- Controls -->
+<div style="max-width:1040px;margin:12px auto;padding:0 10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+    <button class="btn btn-green" onclick="openModal()">＋ Tempahan Baru</button>
+    <span style="color:rgba(255,255,255,.4);font-size:11px">|</span>
+    <span style="color:rgba(255,255,255,.6);font-size:11px;font-weight:600">💾 Simpan:</span>
+    <select id="dlFrom"></select>
+    <span style="color:rgba(255,255,255,.4);font-size:11px">—</span>
+    <select id="dlTo"></select>
+    <button class="btn btn-blue" onclick="downloadMonths()">⬇ Kalender</button>
+    <button class="btn btn-red" onclick="downloadOutstanding()">⬇ Baki</button>
+  </div>
+  <button class="btn btn-ghost" onclick="loadData()">🔄 Refresh</button>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>Penginapan</div>
+  <div class="leg"><div class="leg-dot" style="background:#4c1d95"></div>Jumlah</div>
+  <div class="leg"><div class="leg-dot" style="background:#15803d"></div>Deposit</div>
+  <div class="leg"><div class="leg-dot" style="background:#dc2626"></div>Baki</div>
+  <div class="leg"><div class="leg-dot" style="background:#059669"></div>✅ Selesai</div>
+  <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>⚠️ Semak</div>
+  <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>Cuti Umum</div>
+  <div class="leg"><div class="leg-dot" style="background:#8b5cf6"></div>Cuti Sekolah</div>
+</div>
+
+<div id="root"><div class="loading">⏳ Memuatkan data...</div></div>
+
+<!-- Add/Edit Modal -->
+<div id="modal" class="modal-overlay" style="display:none" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">Tempahan Baru</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nama Tetamu *</label>
+        <input id="f-name" class="form-input" type="text" placeholder="cth: Puan Aminah"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Check-in *</label>
+          <input id="f-ci" class="form-input" type="date"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Check-out *</label>
+          <input id="f-co" class="form-input" type="date"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Bilangan Unit</label>
+          <input id="f-units" class="form-input" type="number" min="1" max="4" placeholder="1–4"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">No. Unit</label>
+          <input id="f-room" class="form-input" type="text" placeholder="cth: H1-H4"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jumlah Caj (RM) *</label>
+        <input id="f-tot" class="form-input" type="number" min="0" placeholder="0" oninput="calcBalance()"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Deposit Diterima (RM)</label>
+        <input id="f-dep" class="form-input" type="number" min="0" placeholder="0" oninput="calcBalance()"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Baki Tertunggak (RM)</label>
+        <div id="f-bal" class="balance-display">—</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select id="f-status" class="form-select">
+          <option value="Active">Active</option>
+          <option value="Paid">Paid — Selesai Bayar</option>
+          <option value="Unclear">Unclear — Perlu Semak</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nota</label>
+        <input id="f-note" class="form-input" type="text" placeholder="cth: 16 pax, early check-in"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="modal-delete-btn" class="btn-danger-outline" style="display:none" onclick="deleteBooking()">🗑 Batal Tempahan</button>
+      <button class="btn btn-blue btn-full" onclick="saveBooking()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Saving overlay -->
+<div id="saving-overlay" class="saving-overlay" style="display:none">
+  <div class="saving-box">⏳ Menyimpan...</div>
+</div>
+
+<script>
+// ── CONFIG — UPDATE THIS AFTER SETTING UP APPS SCRIPT ────────────────────
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0uI0DngCktUJrCFqmZL-8q_bsDGOZodxgiB9Hv178XXHsSFA8N2NwDOwCUsrfRuysmw/exec";
+const SHEET_ID = "11OCRfzmmOCa7EuQAEdP-I6eHroF_96zQw98R0w0OvYI";
+const CSV_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+
+// ── CONSTANTS ─────────────────────────────────────────────────────────────
+const PH={"2026-05-01":"Labour Day","2026-05-07":"Wesak Day",
+  "2026-05-25":"Hari Keputeraan Agong","2026-05-27":"Hari Raya Aidiladha",
+  "2026-06-17":"Awal Muharram","2026-08-31":"Hari Merdeka",
+  "2026-09-16":"Malaysia Day","2026-09-25":"Maulidur Rasul",
+  "2026-10-27":"Deepavali","2026-12-25":"Christmas"};
+const SH=(()=>{const s=new Set();
+  const f=(a,b)=>{const d=new Date(a),e=new Date(b);while(d<=e){s.add(df(d));d.setDate(d.getDate()+1);}};
+  f("2026-03-14","2026-03-22");f("2026-05-16","2026-05-24");
+  f("2026-08-22","2026-08-30");f("2026-10-03","2026-10-11");f("2026-11-14","2026-12-31");
+  return s;})();
+const PAL=[
+  {bg:"#dbeafe",bd:"#3b82f6",tx:"#1e40af"},{bg:"#d1fae5",bd:"#10b981",tx:"#065f46"},
+  {bg:"#ffedd5",bd:"#f97316",tx:"#9a3412"},{bg:"#ede9fe",bd:"#8b5cf6",tx:"#4c1d95"},
+  {bg:"#fce7f3",bd:"#ec4899",tx:"#831843"},{bg:"#ccfbf1",bd:"#14b8a6",tx:"#134e4a"},
+  {bg:"#fef9c3",bd:"#eab308",tx:"#713f12"},{bg:"#e0f2fe",bd:"#0ea5e9",tx:"#0c4a6e"},
+  {bg:"#f0fdf4",bd:"#22c55e",tx:"#14532d"},{bg:"#fff7ed",bd:"#fb923c",tx:"#7c2d12"},
+];
+const MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DOW=["MON","TUE","WED","THU","FRI","SAT","SUN"];
+const ALL_MONTHS=[4,5,6,7,8,9,10,11];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function df(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+function addD(s,n){const d=new Date(s);d.setDate(d.getDate()+n);return df(d);}
+function nts(a,b){return Math.round((new Date(b)-new Date(a))/86400000);}
+function toDate(v){
+  if(!v)return "";
+  v=v.replace(/^"|"$/g,"").trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;
+  const m=v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m)return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+  const d=new Date(v);return isNaN(d)?"":df(d);
+}
+
+// ── CSV PARSE ─────────────────────────────────────────────────────────────
+function parseCSV(text){
+  const lines=text.trim().split("\n");
+  const headers=lines[0].split(",").map(h=>h.replace(/^"|"$/g,"").trim().toLowerCase());
+  return lines.slice(1).map(line=>{
+    const cols=[];let cur="",inQ=false;
+    for(const ch of line){
+      if(ch==='"'){inQ=!inQ;}
+      else if(ch===","&&!inQ){cols.push(cur.trim());cur="";}
+      else cur+=ch;
+    }
+    cols.push(cur.trim());
+    if(cols.every(c=>!c))return null;
+    const row={};
+    headers.forEach((h,i)=>row[h]=(cols[i]||"").replace(/^"|"$/g,"").trim());
+    return row;
+  }).filter(Boolean);
+}
+
+function rowToBooking(r,id){
+  const status=(r.status||"active").toLowerCase().trim();
+  if(status==="cancelled")return null;
+  const ci=toDate(r["check-in"]||r["checkin"]||"");
+  const co=toDate(r["check-out"]||r["checkout"]||"");
+  if(!ci||!co)return null;
+  const tot=r["total"]?parseFloat(r["total"]):null;
+  const dep=r["deposit"]?parseFloat(r["deposit"]):null;
+  const bal=status==="paid"?0:(r["balance"]?parseFloat(r["balance"]):null);
+  const units=(r["units"]||r["unit"]||"").trim();
+  const room=(r["room"]||r["rooms"]||"").trim();
+  const u=units&&room?`${units}·${room}`:units||room||"";
+  // rowIndex for editing (1-based, +1 for header)
+  return{id,ci,co,name:(r["name"]||"").trim(),u,units,room,tot,dep,bal,
+    status,note:(r["note"]||r["notes"]||"").trim(),rowIndex:id+1};
+}
+
+function assignLanes(arr){
+  const sorted=[...arr].sort((a,b)=>a.ci.localeCompare(b.ci));
+  const ends=[];
+  return sorted.map(b=>{
+    let lane=ends.findIndex(e=>e<b.ci);
+    if(lane===-1){lane=ends.length;ends.push(null);}
+    ends[lane]=b.co;
+    return{...b,lane};
+  });
+}
+
+// ── WEEK GRID ─────────────────────────────────────────────────────────────
+function getWeeks(yr,m){
+  const first=new Date(yr,m,1),last=new Date(yr,m+1,0);
+  const pad=(first.getDay()+6)%7;
+  const cells=[];
+  for(let i=pad-1;i>=0;i--){const d=new Date(yr,m,0);d.setDate(d.getDate()-i);cells.push({date:df(d),tm:false});}
+  for(let d=new Date(first);d<=last;d.setDate(d.getDate()+1))cells.push({date:df(new Date(d)),tm:true});
+  while(cells.length%7){const prev=cells[cells.length-1];const nd=new Date(prev.date);nd.setDate(nd.getDate()+1);cells.push({date:df(nd),tm:false});}
+  const wks=[];for(let i=0;i<cells.length;i+=7)wks.push(cells.slice(i,i+7));
+  return wks;
+}
+
+// ── BAR HTML ──────────────────────────────────────────────────────────────
+function barHTML(b,isStart,isEnd){
+  const p=PAL[b.id%PAL.length];
+  const n=nts(b.ci,b.co);
+  const uMatch=b.u?b.u.match(/^(\d+)·(.+)$/):null;
+  const uCount=uMatch?uMatch[1]:"";
+  const uRoom=uMatch?uMatch[2]:(b.u||"");
+  const isUnclear=b.status==="unclear";
+
+  const borderL=isStart?`4px solid ${p.bd}`:`2px dashed ${p.bd}88`;
+  const borderR=isEnd?`2px solid ${p.bd}`:`2px dashed ${p.bd}88`;
+  const rad=isStart&&isEnd?6:isStart?"6px 0 0 6px":isEnd?"0 6px 6px 0":0;
+
+  const barBg=isUnclear?"#fef9c3":p.bg;
+  const barBorderCol=isUnclear?"#f59e0b":p.bd;
+  const chipBg=isUnclear?"#f59e0b":p.bd;
+  const nameCol=isUnclear?"#92400e":p.tx;
+
+  if(!isStart){
+    return `<div class="bar" style="background:${barBg};border-top:2px solid ${barBorderCol};border-bottom:2px solid ${barBorderCol};border-left:${borderL};border-right:${borderR};border-radius:${rad}" onclick="editBooking(${b.id})">
+      <div class="bar-chips"><div></div><div style="text-align:right">${isEnd?'<span class="chip chip-out">OUT</span>':""}</div></div>
+      <div class="bar-cont" style="color:${nameCol}">↳ ${b.name}</div>
+    </div>`;
+  }
+
+  let info="";
+  if(b.u) info+=`<span class="binfo bi-unit">🏠 ${uCount} unit · ${uRoom}</span>`;
+  if(b.tot!=null) info+=`<span class="binfo bi-tot">💰 Jumlah: RM${b.tot.toLocaleString()}</span>`;
+  if(b.dep!=null) info+=`<span class="binfo bi-dep">💵 Deposit: RM${b.dep.toLocaleString()}</span>`;
+  if(b.bal!=null&&b.bal>0) info+=`<span class="binfo bi-bal">⏳ Baki: RM${b.bal.toLocaleString()}</span>`;
+  if(b.bal===0) info+=`<span class="binfo bi-paid">✅ Selesai Bayar</span>`;
+  if(isUnclear) info+=`<span class="binfo bi-unclear">⚠️ Semak maklumat</span>`;
+  if(b.note&&!isUnclear) info+=`<span class="binfo bi-note">📝 ${b.note}</span>`;
+
+  return `<div class="bar" style="background:${barBg};border-top:2px solid ${barBorderCol};border-bottom:2px solid ${barBorderCol};border-left:${borderL};border-right:${borderR};border-radius:${rad}" onclick="editBooking(${b.id})">
+    <div class="bar-chips">
+      <div><span class="chip" style="background:${chipBg}">IN</span></div>
+      <div style="text-align:right">${isEnd?'<span class="chip chip-out">OUT</span>':""}</div>
+    </div>
+    <div class="bar-name" style="color:${nameCol}">${b.name}</div>
+    <div class="bar-nights">${n} malam</div>
+    ${info}
+  </div>`;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+let ALL_BOOKINGS=[];
+
+function renderCalendar(bookings){
+  ALL_BOOKINGS=bookings;
+  const BKGS=assignLanes(bookings.filter(b=>b.status!=="cancelled"));
+  const root=document.getElementById("root");
+  root.innerHTML="";
+
+  // Outstanding panel
+  const unpaid=BKGS.filter(b=>b.bal!=null&&b.bal>0);
+  if(unpaid.length){
+    const total=unpaid.reduce((s,b)=>s+(b.bal||0),0);
+    let rows="";
+    unpaid.forEach(b=>{
+      const p=PAL[b.id%PAL.length];
+      rows+=`<div class="out-row" onclick="editBooking(${b.id})">
+        <div class="out-swatch" style="background:${p.bd}"></div>
+        <div class="out-info">
+          <div class="out-name">${b.name}</div>
+          <div class="out-meta">${b.ci} → ${b.co}${b.u?" · "+b.u:""}</div>
+        </div>
+        <div class="out-amounts">
+          ${b.tot!=null?`<div class="out-tot">Jumlah: RM${b.tot.toLocaleString()}</div>`:""}
+          ${b.dep!=null?`<div class="out-dep">Deposit: RM${b.dep.toLocaleString()}</div>`:""}
+          <div class="out-bal">Baki: RM${b.bal.toLocaleString()}</div>
+        </div>
+      </div>`;
+    });
+    const wrap=document.createElement("div");
+    wrap.className="out-wrap";
+    wrap.innerHTML=`<div class="out-panel" id="out-panel">
+      <div class="out-hdr"><h2>⏳ Baki Belum Bayar</h2><span class="out-total">Jumlah: RM ${total.toLocaleString()}</span></div>
+      ${rows}
+    </div>`;
+    root.appendChild(wrap);
+  }
+
+  // Month cards
+  ALL_MONTHS.forEach(m=>{
+    const yr=2026;
+    const weeks=getWeeks(yr,m);
+    const mS=`${yr}-${String(m+1).padStart(2,"0")}-01`;
+    const mE=df(new Date(yr,m+1,0)),mEN=addD(mE,1);
+    const mBks=BKGS.filter(b=>b.ci<mEN&&b.co>mS);
+    const totDep=mBks.reduce((s,b)=>s+(b.dep||0),0);
+    const totBal=mBks.reduce((s,b)=>s+(b.bal||0),0);
+    const totTot=mBks.reduce((s,b)=>s+(b.tot||0),0);
+
+    let tbody="";
+    weeks.forEach((week,wi)=>{
+      const dates=week.map(c=>c.date);
+      const thisMo=week.filter(c=>c.tm).map(c=>c.date);
+      const wS=dates[0],wE=dates[6],wNext=addD(wE,1);
+      const hasPH=thisMo.some(d=>PH[d]),hasSH=thisMo.some(d=>SH.has(d));
+
+      tbody+=`<tr><td colspan="7" style="padding:0"><div class="wk-lbl">WEEK ${wi+1}
+        ${hasPH?'<span class="wk-pill wkph">Cuti Umum</span>':""}
+        ${hasSH?'<span class="wk-pill wksh">Cuti Sekolah</span>':""}
+      </div></td></tr>`;
+
+      tbody+="<tr>";
+      week.forEach((cell,di)=>{
+        const d=cell.date,tm=cell.tm;
+        const isPH=tm&&PH[d],isSH=tm&&!isPH&&SH.has(d),isSun=di===6;
+        let cls="dc"+(tm?"":" dim")+(isPH?" ph":"")+(isSH?" sh":"")+(isSun?" sun":"");
+        tbody+=`<td class="${cls}"><div class="dn">${parseInt(d.slice(8))}</div>`;
+        if(isPH)tbody+=`<div class="dph">${PH[d]}</div>`;
+        else if(isSH)tbody+=`<div class="dsh">Cuti Sekolah</div>`;
+        tbody+="</td>";
+      });
+      tbody+="</tr>";
+
+      const wBks=BKGS.filter(b=>b.ci<=wE&&b.co>wS);
+      const maxLane=wBks.length?Math.max(...wBks.map(b=>b.lane)):-1;
+      for(let lane=0;lane<=maxLane;lane++){
+        const occ=new Array(7).fill(null);
+        wBks.filter(b=>b.lane===lane).forEach(b=>{
+          const bS=b.ci>=wS?b.ci:wS;
+          const bE=b.co<=wE?b.co:wE;
+          const cS=dates.indexOf(bS);
+          const cE=b.co<=wE?dates.indexOf(bE):6;
+          if(cS===-1||cE<cS)return;
+          for(let c=cS;c<=cE;c++) occ[c]={b,cS,cE,isStart:b.ci>=wS,isEnd:b.co<=wNext};
+        });
+        tbody+="<tr>";
+        let ci=0;
+        while(ci<7){
+          if(!occ[ci]){tbody+=`<td class="bc"></td>`;ci++;}
+          else{
+            const{b,cS,cE,isStart,isEnd}=occ[ci];
+            const span=cE-cS+1;
+            tbody+=`<td class="bc" colspan="${span}">${barHTML(b,isStart,isEnd)}</td>`;
+            ci+=span;
+          }
+        }
+        tbody+="</tr>";
+      }
+      tbody+=`<tr><td colspan="7" class="wk-gap"></td></tr>`;
+    });
+
+    const outer=document.createElement("div");
+    outer.className="month-outer";outer.id=`month-${m}`;
+    outer.innerHTML=`<div class="month-card">
+      <div class="month-hdr">
+        <h2>${MN[m].toUpperCase()} ${yr}</h2>
+        <div class="mhdr-leg">
+          <span><i style="background:#f59e0b"></i>Cuti Umum</span>
+          <span><i style="background:#8b5cf6"></i>Cuti Sekolah</span>
+        </div>
+      </div>
+      <table class="cal">
+        <thead><tr>${DOW.map(d=>`<th>${d}</th>`).join("")}</tr></thead>
+        <tbody>${tbody}</tbody>
+      </table>
+      <div class="msum">
+        <div class="ms"><div class="ms-icon">📋</div><div class="ms-val">${mBks.length}</div><div class="ms-lbl">Tempahan</div></div>
+        <div class="ms"><div class="ms-icon">💵</div><div class="ms-val">RM ${totDep.toLocaleString()}</div><div class="ms-lbl">Deposit</div></div>
+        <div class="ms"><div class="ms-icon">⏳</div><div class="ms-val">RM ${totBal.toLocaleString()}</div><div class="ms-lbl">Baki</div></div>
+        <div class="ms"><div class="ms-icon">💰</div><div class="ms-val">${totTot?`RM ${totTot.toLocaleString()}`:"—"}</div><div class="ms-lbl">Jangkaan</div></div>
+      </div>
+    </div>`;
+    root.appendChild(outer);
+  });
+
+  // Populate selectors
+  ["dlFrom","dlTo"].forEach(id=>{
+    document.getElementById(id).innerHTML=ALL_MONTHS.map(m=>`<option value="${m}">${MN[m]}</option>`).join("");
+  });
+  document.getElementById("dlTo").value=ALL_MONTHS[ALL_MONTHS.length-1];
+}
+
+// ── DATA LOAD ─────────────────────────────────────────────────────────────
+async function loadData(){
+  document.getElementById("root").innerHTML='<div class="loading">⏳ Memuatkan data dari Google Sheets...</div>';
+  try{
+    const res=await fetch(CSV_URL+"&t="+Date.now());
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const text=await res.text();
+    const rows=parseCSV(text);
+    const bookings=rows.map((r,i)=>rowToBooking(r,i+1)).filter(Boolean);
+    renderCalendar(bookings);
+  }catch(e){
+    document.getElementById("root").innerHTML=`<div class="loading" style="color:#fca5a5">
+      ❌ Gagal memuatkan data.<br><br>
+      Pastikan Google Sheet dikongsi sebagai "Anyone with the link can view".<br><br>
+      <small style="opacity:.7">${e.message}</small>
+    </div>`;
+  }
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+let editingId=null;
+
+function calcBalance(){
+  const tot=parseFloat(document.getElementById("f-tot").value)||0;
+  const dep=parseFloat(document.getElementById("f-dep").value)||0;
+  const bal=tot-dep;
+  const el=document.getElementById("f-bal");
+  if(!tot&&!dep){el.textContent="—";el.className="balance-display";return;}
+  if(bal<=0){el.textContent="RM 0 — Selesai Bayar ✅";el.className="balance-display paid";}
+  else{el.textContent=`RM ${bal.toLocaleString()}`;el.className="balance-display owing";}
+}
+
+function openModal(b){
+  editingId=null;
+  document.getElementById("modal-title").textContent="Tempahan Baru";
+  document.getElementById("f-name").value="";
+  document.getElementById("f-ci").value="";
+  document.getElementById("f-co").value="";
+  document.getElementById("f-units").value="";
+  document.getElementById("f-room").value="";
+  document.getElementById("f-tot").value="";
+  document.getElementById("f-dep").value="";
+  document.getElementById("f-bal").textContent="—";
+  document.getElementById("f-bal").className="balance-display";
+  document.getElementById("f-status").value="Active";
+  document.getElementById("f-note").value="";
+  document.getElementById("modal-delete-btn").style.display="none";
+  document.getElementById("modal").style.display="flex";
+}
+
+function editBooking(id){
+  const b=ALL_BOOKINGS.find(x=>x.id===id);
+  if(!b)return;
+  editingId=id;
+  document.getElementById("modal-title").textContent="Edit Tempahan";
+  document.getElementById("f-name").value=b.name;
+  document.getElementById("f-ci").value=b.ci;
+  document.getElementById("f-co").value=b.co;
+  document.getElementById("f-units").value=b.units||"";
+  document.getElementById("f-room").value=b.room||"";
+  document.getElementById("f-tot").value=b.tot||"";
+  document.getElementById("f-dep").value=b.dep||"";
+  document.getElementById("f-status").value=b.status.charAt(0).toUpperCase()+b.status.slice(1);
+  document.getElementById("f-note").value=b.note||"";
+  calcBalance();
+  document.getElementById("modal-delete-btn").style.display="block";
+  document.getElementById("modal").style.display="flex";
+}
+
+function closeModal(){document.getElementById("modal").style.display="none";}
+function closeModalOutside(e){if(e.target.id==="modal")closeModal();}
+
+async function saveBooking(){
+  const name=document.getElementById("f-name").value.trim();
+  const ci=document.getElementById("f-ci").value;
+  const co=document.getElementById("f-co").value;
+  if(!name||!ci||!co){alert("Sila isi nama, tarikh check-in dan check-out.");return;}
+  if(ci>=co){alert("Tarikh check-out mesti selepas check-in.");return;}
+
+  const tot=parseFloat(document.getElementById("f-tot").value)||"";
+  const dep=parseFloat(document.getElementById("f-dep").value)||"";
+  const bal=tot&&dep?Math.max(0,tot-dep):"";
+  const status=document.getElementById("f-status").value;
+  const units=document.getElementById("f-units").value.trim();
+  const room=document.getElementById("f-room").value.trim();
+  const note=document.getElementById("f-note").value.trim();
+
+  const rowData={name,ci,co,units,room,total:tot,deposit:dep,balance:bal,status,note};
+
+  showSaving(true);
+  try{
+    if(APPS_SCRIPT_URL==="YOUR_APPS_SCRIPT_URL_HERE"){
+      // Demo mode — just show it worked without actually saving
+      alert("⚠️ Apps Script belum dikonfigurasi.\n\nSila ikut langkah setup untuk enable save ke Google Sheets.");
+      closeModal();showSaving(false);return;
+    }
+    const action=editingId?"update":"append";
+    const b=editingId?ALL_BOOKINGS.find(x=>x.id===editingId):null;
+    const payload={action,rowData};
+    if(b)payload.rowIndex=b.rowIndex;
+
+    const res=await fetch(APPS_SCRIPT_URL,{method:"POST",body:JSON.stringify(payload)});
+    const json=await res.json();
+    if(json.status!=="ok")throw new Error(json.message||"Unknown error");
+    closeModal();
+    await loadData();
+  }catch(e){
+    alert("Gagal menyimpan: "+e.message);
+  }
+  showSaving(false);
+}
+
+async function deleteBooking(){
+  if(!editingId)return;
+  if(!confirm("Batalkan tempahan ini?"))return;
+  const b=ALL_BOOKINGS.find(x=>x.id===editingId);
+  if(!b)return;
+  showSaving(true);
+  try{
+    if(APPS_SCRIPT_URL==="YOUR_APPS_SCRIPT_URL_HERE"){
+      alert("⚠️ Apps Script belum dikonfigurasi.");
+      closeModal();showSaving(false);return;
+    }
+    const res=await fetch(APPS_SCRIPT_URL,{method:"POST",
+      body:JSON.stringify({action:"cancel",rowIndex:b.rowIndex})});
+    const json=await res.json();
+    if(json.status!=="ok")throw new Error(json.message||"Unknown error");
+    closeModal();
+    await loadData();
+  }catch(e){alert("Gagal membatalkan: "+e.message);}
+  showSaving(false);
+}
+
+function showSaving(v){document.getElementById("saving-overlay").style.display=v?"flex":"none";}
+
+// ── DOWNLOADS ─────────────────────────────────────────────────────────────
+async function downloadMonths(){
+  const from=+document.getElementById("dlFrom").value;
+  const to=+document.getElementById("dlTo").value;
+  showSaving(true);
+  for(const m of ALL_MONTHS.filter(m=>m>=from&&m<=to)){
+    const el=document.getElementById(`month-${m}`);
+    if(!el)continue;
+    const canvas=await html2canvas(el,{scale:2,backgroundColor:"#f0f4f8",useCORS:true,logging:false});
+    const a=document.createElement("a");
+    a.download=`homestay-${MN[m]}-2026.png`;
+    a.href=canvas.toDataURL("image/png");
+    a.click();
+    await new Promise(r=>setTimeout(r,700));
+  }
+  showSaving(false);
+}
+
+async function downloadOutstanding(){
+  const el=document.getElementById("out-panel");
+  if(!el){alert("Tiada baki tertunggak.");return;}
+  showSaving(true);
+  const canvas=await html2canvas(el,{scale:2,backgroundColor:"#fff",useCORS:true,logging:false});
+  const a=document.createElement("a");
+  a.download="baki-belum-bayar-2026.png";
+  a.href=canvas.toDataURL("image/png");
+  a.click();
+  showSaving(false);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
