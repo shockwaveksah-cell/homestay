@@ -379,7 +379,10 @@ function barHTML(b,isStart,isEnd){
   // Continuation bar (booking started previous week)
   if(!isStart){
     return `<div class="bar" style="${barStyle}" onclick="editBooking(${b.id})">
-
+      <div class="bar-chips">
+        <span></span>
+        ${isEnd ? `<span class="chip-out">OUT</span>` : `<span></span>`}
+      </div>
       <div class="bar-cont" style="color:${nameCol}">↳ ${b.name}</div>
     </div>`;
   }
@@ -497,7 +500,7 @@ function renderCalendar(){
       tbody+="</tr>";
 
       // Bar rows — one per lane
-      const wBks=BKGS.filter(b=>b.ci<=wE&&b.co>wS);
+      const wBks=BKGS.filter(b=>b.ci<=wE&&b.co>=wS);
       const maxLane=wBks.length?Math.max(...wBks.map(b=>b.lane)):-1;
       for(let lane=0;lane<=maxLane;lane++){
         const occ=new Array(7).fill(null);
@@ -510,7 +513,8 @@ function renderCalendar(){
           const cE = b.co <= wE ? dates.indexOf(bE) : 6;
           if(cS === -1 || cE < cS) return;
           const isStart = b.ci >= wS;
-          const isEnd = b.co <= wNext;
+          // isEnd only true if checkout is actually IN this week (not just equal to start of next week)
+          const isEnd = b.co <= wE;
           for(let c = cS; c <= cE; c++) occ[c] = {b, cS, cE, isStart, isEnd};
         });
         tbody += "<tr>";
