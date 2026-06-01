@@ -247,7 +247,7 @@ select option{background:#1e3a5f;color:#fff}
     </div>
     <div class="form-group">
       <label class="form-label">No. Telefon <span style="font-weight:400;color:#94a3b8">(pilihan)</span></label>
-      <input id="b-phone" class="form-input" type="tel" placeholder="cth: 012-3456789"/>
+      <input id="b-phone" class="form-input" type="text" inputmode="tel" placeholder="cth: 012-3456789"/>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -425,7 +425,7 @@ select option{background:#1e3a5f;color:#fff}
       </div>
       <div class="form-group">
         <label class="form-label">No. Telefon</label>
-        <input id="e-phone" class="form-input" type="tel"/>
+        <input id="e-phone" class="form-input" type="text" inputmode="tel"/>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -1050,7 +1050,7 @@ function onBookingSelected(){
 // ── SAVE FUNCTIONS ────────────────────────────────────────────────────────
 function calcBal(){
   const tot=parseFloat(document.getElementById("b-tot").value)||0;
-  const dep=parseFloat(document.getElementById("b-dep").value)||0;
+  const dep=document.getElementById("b-dep").value!==""?parseFloat(document.getElementById("b-dep").value)||0:"";
   const el=document.getElementById("b-bal");
   if(!tot&&!dep){el.textContent="—";el.className="bal-display";return;}
   const bal=tot-dep;
@@ -1072,7 +1072,7 @@ async function saveNewBooking(){
   if(!name||!ci||!co){alert("Sila isi nama, check-in dan check-out.");return;}
   if(ci>=co){alert("Check-out mesti selepas check-in.");return;}
   const tot=parseFloat(document.getElementById("b-tot").value)||"";
-  const dep=parseFloat(document.getElementById("b-dep").value)||0;
+  const dep=document.getElementById("b-dep").value!==""?parseFloat(document.getElementById("b-dep").value)||0:"";
   const bal=tot?Math.max(0,tot-dep):"";
   showSaving(true);
   try{
@@ -1192,7 +1192,7 @@ async function saveEdit(){
       units:document.getElementById("e-units").value.trim(),
       room:document.getElementById("e-room").value.trim(),
       total:parseFloat(document.getElementById("e-tot").value)||"",
-      deposit:parseFloat(document.getElementById("e-dep").value)||"",
+      deposit:document.getElementById("e-dep").value!==""?parseFloat(document.getElementById("e-dep").value):"",
       status:document.getElementById("e-status").value,
       note:document.getElementById("e-note").value.trim(),
     }});
