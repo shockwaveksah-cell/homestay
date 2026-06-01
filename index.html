@@ -9,22 +9,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0f1e35;font-family:'Plus Jakarta Sans',sans-serif;padding-bottom:60px}
+body{background:#0f1e35;font-family:'Plus Jakarta Sans',sans-serif;padding-bottom:60px;min-height:100vh}
 
 /* ── APP HEADER ── */
-.app-header{background:linear-gradient(135deg,#1e3a5f,#2d6a9f);padding:14px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.app-header{background:linear-gradient(135deg,#1e3a5f,#2d6a9f);padding:14px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.3);width:100%}
 .app-header h1{color:#fff;font-size:20px;font-weight:800;margin:4px 0 2px}
 .app-header p{color:rgba(255,255,255,.5);font-size:10px}
 
 /* ── TABS ── */
-.tabs{display:flex;background:#162d4e;border-bottom:2px solid #1e3a5f;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs{display:flex;background:#162d4e;border-bottom:2px solid #1e3a5f;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:100}
 .tab{flex:1;min-width:80px;padding:10px 8px;text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s}
 .tab:hover{color:rgba(255,255,255,.8)}
 .tab.active{color:#fff;border-bottom-color:#3b82f6;background:rgba(59,130,246,.1)}
 .tab-icon{font-size:14px;display:block;margin-bottom:2px}
 
 /* ── TAB CONTENT ── */
-.tab-content{display:none;padding:12px 10px}
+.tab-content{display:none;padding:12px 10px;max-width:1200px;margin:0 auto;width:100%}
 .tab-content.active{display:block}
 
 /* ── BUTTONS ── */
@@ -46,7 +46,7 @@ select option{background:#1e3a5f;color:#fff}
 .card-body{padding:14px}
 
 /* ── STAT CARDS ── */
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}@media(min-width:640px){.stat-grid{grid-template-columns:repeat(3,1fr)}}@media(min-width:960px){.stat-grid{grid-template-columns:repeat(6,1fr)}}
 .stat-card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.15);text-align:center}
 .stat-icon{font-size:18px;margin-bottom:4px}
 .stat-val{font-size:16px;font-weight:800;color:#0f172a}
@@ -58,10 +58,10 @@ select option{background:#1e3a5f;color:#fff}
 .leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
 
 /* ── CALENDAR ── */
-.cal-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px;width:100%}
 .cal-toolbar-left{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
-.month-outer{margin-bottom:24px}
+.month-outer{margin-bottom:20px;width:100%}
 .month-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2)}
 .month-hdr{background:#1e3a5f;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
 .month-hdr h2{color:#fff;font-size:15px;font-weight:800}
@@ -69,7 +69,7 @@ select option{background:#1e3a5f;color:#fff}
 .mhdr-leg span{display:flex;align-items:center;gap:3px;font-size:8px;color:rgba(255,255,255,.6)}
 .mhdr-leg i{width:7px;height:7px;border-radius:2px;display:inline-block;flex-shrink:0}
 
-.cal{width:100%;table-layout:fixed;border-collapse:collapse}
+.cal{width:100%;table-layout:fixed;border-collapse:collapse;min-width:560px}
 .cal th{background:#162d4e;text-align:center;padding:5px 0;font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.65);border-right:1px solid rgba(255,255,255,.06)}
 .cal th:last-child{border-right:none;color:#fca5a5}
 .cal td{vertical-align:top;padding:0;width:calc(100%/7)}
@@ -168,7 +168,7 @@ select option{background:#1e3a5f;color:#fff}
 /* ── TAB 4: CHARTS ── */
 .chart-wrap{background:#fff;border-radius:12px;padding:14px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
 .chart-title{font-size:13px;font-weight:800;color:#1e293b;margin-bottom:12px}
-.chart-container{position:relative;width:100%;height:220px}
+.chart-container{position:relative;width:100%;height:280px}
 
 /* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -233,7 +233,7 @@ select option{background:#1e3a5f;color:#fff}
     <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>Cuti Umum</div>
     <div class="leg"><div class="leg-dot" style="background:#8b5cf6"></div>Cuti Sekolah</div>
   </div>
-  <div id="cal-root"><div class="loading">⏳ Memuatkan...</div></div>
+  <div style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch"><div id="cal-root"><div class="loading">⏳ Memuatkan...</div></div></div>
 </div>
 
 <!-- TAB 2: BOOKINGS & TRANSACTIONS -->
@@ -519,7 +519,7 @@ function toDate(v){
   if(m)return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
   const d=new Date(v);return isNaN(d)?"":df(d);
 }
-function parseNum(v){const n=parseFloat(v);return isNaN(n)?null:n;}
+function parseNum(v){if(v===''||v===null||v===undefined)return null;const n=parseFloat(v);return isNaN(n)?null:n;}
 
 // ── CSV PARSE ─────────────────────────────────────────────────────────────
 function parseCSV(text){
@@ -807,23 +807,43 @@ function renderCharts(){
   const yoyUnpaid=allYears.map(y=>monthlyRevenue(y).unpaid.reduce((a,b)=>a+b,0));
   const yoyExp=allYears.map(y=>monthlyExpenses(y).byMonth.reduce((a,b)=>a+b,0));
 
+  // YoY — stacked bars: Diterima + Tertunggak = total revenue, Perbelanjaan separate
+  // Use grouped bars with proper bar thickness when few years
+  const barThickness = allYears.length === 1 ? 60 : undefined;
   charts.yoyRev=new Chart(document.getElementById("chart-yoy-revenue"),{
     type:"bar",
     data:{labels:allYears.map(String),datasets:[
-      {label:"Diterima",data:yoyPaid,backgroundColor:"#16a34a88",borderColor:"#16a34a",borderWidth:2},
-      {label:"Tertunggak",data:yoyUnpaid,backgroundColor:"#f9731688",borderColor:"#f97316",borderWidth:2},
-      {label:"Perbelanjaan",data:yoyExp,backgroundColor:"#dc262688",borderColor:"#dc2626",borderWidth:2},
+      {label:"Diterima",data:yoyPaid,backgroundColor:"#16a34acc",borderColor:"#16a34a",borderWidth:2,barThickness,stack:"revenue"},
+      {label:"Tertunggak",data:yoyUnpaid,backgroundColor:"#f97316cc",borderColor:"#f97316",borderWidth:2,barThickness,stack:"revenue"},
+      {label:"Perbelanjaan",data:yoyExp,backgroundColor:"#dc2626cc",borderColor:"#dc2626",borderWidth:2,barThickness,stack:"expenses"},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},padding:16}}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{ticks:{callback:v=>`RM${v.toLocaleString()}`},grid:{color:"#f1f5f9"}}
+      }
+    }
   });
 
   const yoyProfit=allYears.map((y,i)=>yoyPaid[i]-yoyExp[i]);
   charts.yoyProfit=new Chart(document.getElementById("chart-yoy-profit"),{
     type:"bar",
     data:{labels:allYears.map(String),datasets:[
-      {label:"Untung Bersih",data:yoyProfit,backgroundColor:yoyProfit.map(v=>v>=0?"#16a34a88":"#dc262688"),borderColor:yoyProfit.map(v=>v>=0?"#16a34a":"#dc2626"),borderWidth:2},
+      {label:"Untung Bersih",data:yoyProfit,
+        backgroundColor:yoyProfit.map(v=>v>=0?"#16a34acc":"#dc2626cc"),
+        borderColor:yoyProfit.map(v=>v>=0?"#16a34a":"#dc2626"),
+        borderWidth:2,barThickness},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},padding:16}}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{ticks:{callback:v=>`RM${v.toLocaleString()}`},grid:{color:"#f1f5f9"}}
+      }
+    }
   });
 
   // ── Monthly charts for selected year ──
@@ -850,10 +870,17 @@ function renderCharts(){
   charts.monthRev=new Chart(document.getElementById("chart-monthly-revenue"),{
     type:"bar",
     data:{labels:MONTHS_LABELS,datasets:[
-      {label:"Diterima",data:paid,backgroundColor:"#16a34a88",borderColor:"#16a34a",borderWidth:2},
-      {label:"Tertunggak",data:unpaid,backgroundColor:"#f9731688",borderColor:"#f97316",borderWidth:2},
+      {label:"Diterima",data:paid,backgroundColor:"#16a34acc",borderColor:"#16a34a",borderWidth:2,stack:"rev"},
+      {label:"Tertunggak",data:unpaid,backgroundColor:"#f97316cc",borderColor:"#f97316",borderWidth:2,stack:"rev"},
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{stacked:false},y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},padding:16}}},
+      scales:{
+        x:{stacked:true,grid:{display:false}},
+        y:{stacked:true,ticks:{callback:v=>`RM${v.toLocaleString()}`},grid:{color:"#f1f5f9"}}
+      }
+    }
   });
 
   // Monthly expenses by category
@@ -864,7 +891,14 @@ function renderCharts(){
   charts.monthExp=new Chart(document.getElementById("chart-monthly-expenses"),{
     type:"bar",
     data:{labels:MONTHS_LABELS,datasets:catDatasets.length?catDatasets:[{label:"Tiada Data",data:new Array(12).fill(0),backgroundColor:"#e2e8f088"}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},padding:16}}},
+      scales:{
+        x:{stacked:true,grid:{display:false}},
+        y:{stacked:true,ticks:{callback:v=>`RM${v.toLocaleString()}`},grid:{color:"#f1f5f9"}}
+      }
+    }
   });
 
   // Monthly profit
@@ -873,10 +907,17 @@ function renderCharts(){
     type:"bar",
     data:{labels:MONTHS_LABELS,datasets:[{
       label:"Untung Bersih",data:profit,
-      backgroundColor:profit.map(v=>v>=0?"#16a34a88":"#dc262688"),
+      backgroundColor:profit.map(v=>v>=0?"#16a34acc":"#dc2626cc"),
       borderColor:profit.map(v=>v>=0?"#16a34a":"#dc2626"),borderWidth:2
     }]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},padding:16}}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{ticks:{callback:v=>`RM${v.toLocaleString()}`},grid:{color:"#f1f5f9"}}
+      }
+    }
   });
 
   // Monthly bookings
@@ -886,8 +927,15 @@ function renderCharts(){
   });
   charts.monthBkgs=new Chart(document.getElementById("chart-monthly-bookings"),{
     type:"bar",
-    data:{labels:MONTHS_LABELS,datasets:[{label:"Tempahan",data:bookingsByMonth,backgroundColor:"#3b82f688",borderColor:"#3b82f6",borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{stepSize:1}}}}
+    data:{labels:MONTHS_LABELS,datasets:[{label:"Tempahan",data:bookingsByMonth,backgroundColor:"#3b82f6cc",borderColor:"#3b82f6",borderWidth:2}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},padding:16}}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{ticks:{stepSize:1},grid:{color:"#f1f5f9"}}
+      }
+    }
   });
 }
 
