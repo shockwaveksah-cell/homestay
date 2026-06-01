@@ -6,101 +6,107 @@
 <title>Onde-onde Homestay</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0f1e35;font-family:'Plus Jakarta Sans',sans-serif;padding:0 0 60px}
+body{background:#0f1e35;font-family:'Plus Jakarta Sans',sans-serif;padding-bottom:60px}
 
+/* ── APP HEADER ── */
 .app-header{background:linear-gradient(135deg,#1e3a5f,#2d6a9f);padding:14px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.3)}
 .app-header h1{color:#fff;font-size:20px;font-weight:800;margin:4px 0 2px}
 .app-header p{color:rgba(255,255,255,.5);font-size:10px}
 
-.toolbar{max-width:1040px;margin:12px auto;padding:0 10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.toolbar-left{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.btn{font-size:11px;font-weight:700;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
+/* ── TABS ── */
+.tabs{display:flex;background:#162d4e;border-bottom:2px solid #1e3a5f;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{flex:1;min-width:80px;padding:10px 8px;text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s}
+.tab:hover{color:rgba(255,255,255,.8)}
+.tab.active{color:#fff;border-bottom-color:#3b82f6;background:rgba(59,130,246,.1)}
+.tab-icon{font-size:14px;display:block;margin-bottom:2px}
+
+/* ── TAB CONTENT ── */
+.tab-content{display:none;padding:12px 10px}
+.tab-content.active{display:block}
+
+/* ── BUTTONS ── */
+.btn{font-size:11px;font-weight:700;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .15s}
+.btn:hover{opacity:.85}
 .btn-green{background:#16a34a;color:#fff}
 .btn-blue{background:#2563eb;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
+.btn-amber{background:#d97706;color:#fff}
 .btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.btn-sm{padding:6px 10px;font-size:10px}
 select{font-size:11px;font-weight:600;padding:7px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.12);color:#fff;cursor:pointer}
 select option{background:#1e3a5f;color:#fff}
 
-.legend{display:flex;flex-wrap:wrap;gap:5px 12px;justify-content:center;padding:0 10px;margin-bottom:12px}
+/* ── CARDS ── */
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2);margin-bottom:16px}
+.card-hdr{padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.card-hdr h2{font-size:14px;font-weight:800}
+.card-body{padding:14px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.15);text-align:center}
+.stat-icon{font-size:18px;margin-bottom:4px}
+.stat-val{font-size:16px;font-weight:800;color:#0f172a}
+.stat-lbl{font-size:9px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:5px 12px;justify-content:center;margin-bottom:12px}
 .leg{display:flex;align-items:center;gap:4px;color:rgba(255,255,255,.6);font-size:9px}
 .leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
 
-/* Outstanding */
-.out-wrap{max-width:1040px;margin:0 auto 16px;padding:0 10px}
-.out-panel{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2)}
-.out-hdr{background:#7f1d1d;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-.out-hdr h2{color:#fff;font-size:14px;font-weight:800}
-.out-total{color:#fca5a5;font-size:12px;font-weight:700}
-.out-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer}
-.out-row:last-child{border-bottom:none}
-.out-row:nth-child(even){background:#fafafa}
-.out-row:hover{background:#fef2f2}
-.out-swatch{width:4px;height:40px;border-radius:2px;flex-shrink:0}
-.out-info{flex:1;min-width:0}
-.out-name{font-size:11px;font-weight:700;color:#1e293b;word-break:break-word}
-.out-meta{font-size:9px;color:#64748b;margin-top:1px}
-.out-phone{font-size:10px;color:#2563eb;font-weight:600;margin-top:2px}
-.out-amounts{text-align:right;flex-shrink:0}
-.out-tot{font-size:9px;color:#4c1d95;font-weight:600}
-.out-dep{font-size:9px;color:#15803d;font-weight:600}
-.out-bal{font-size:13px;font-weight:800;color:#dc2626}
+/* ── CALENDAR ── */
+.cal-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-toolbar-left{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
-/* Month */
-.month-outer{max-width:1040px;margin:0 auto 28px;padding:0 10px}
+.month-outer{margin-bottom:24px}
 .month-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2)}
 .month-hdr{background:#1e3a5f;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-.month-hdr h2{color:#fff;font-size:16px;font-weight:800}
+.month-hdr h2{color:#fff;font-size:15px;font-weight:800}
 .mhdr-leg{display:flex;gap:10px}
 .mhdr-leg span{display:flex;align-items:center;gap:3px;font-size:8px;color:rgba(255,255,255,.6)}
 .mhdr-leg i{width:7px;height:7px;border-radius:2px;display:inline-block;flex-shrink:0}
 
-/* Table */
 .cal{width:100%;table-layout:fixed;border-collapse:collapse}
 .cal th{background:#162d4e;text-align:center;padding:5px 0;font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.65);border-right:1px solid rgba(255,255,255,.06)}
 .cal th:last-child{border-right:none;color:#fca5a5}
 .cal td{vertical-align:top;padding:0;width:calc(100%/7)}
 
-/* Week label */
 .wk-lbl{background:#f1f5f9;border-top:1px solid #dde3ea;border-bottom:1px solid #dde3ea;padding:3px 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
 .wk-lbl-text{font-size:9px;font-weight:700;color:#64748b;letter-spacing:.05em}
-.wk-lbl-range{font-size:8.5px;font-weight:600;color:#94a3b8}
+.wk-lbl-range{font-size:8px;font-weight:600;color:#94a3b8}
 .wk-pill{font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px}
 .wkph{background:#fef3c7;color:#92400e}
 .wksh{background:#ede9fe;color:#6d28d9}
 
-/* Date cells */
 .dc{border-right:1px solid #e8ecf0;border-bottom:1px solid #e8ecf0;padding:4px 5px 3px;background:#fff;border-top:3px solid transparent;min-height:34px}
 .dc:last-child{border-right:none}
 .dc.dim{background:#f0f0f0}
 .dc.ph{background:#fffbeb;border-top-color:#f59e0b}
 .dc.sh{background:#f5f3ff;border-top-color:#8b5cf6}
-.dn{font-size:12px;font-weight:800;color:#1e293b;line-height:1}
+.dn{font-size:11px;font-weight:800;color:#1e293b;line-height:1}
 .dc.dim .dn{color:#bbb}
 .dc.sun .dn{color:#dc2626}
 .dc.ph .dn{color:#92400e}
+.day-abbr{font-size:7px;font-style:italic;font-weight:600;color:#94a3b8}
+.dc.sun .day-abbr{color:#dc2626}
+.dc.ph .day-abbr{color:#92400e}
 .dph{font-size:6.5px;font-weight:600;color:#92400e;margin-top:2px;line-height:1.3}
 .dsh{font-size:6.5px;font-weight:600;color:#6d28d9;margin-top:2px}
 
-/* Bar cells */
 .bc{background:#f8fafc;border-right:1px solid #e8ecf0;border-bottom:1px solid #e8ecf0;padding:2px}
 .bc:last-child{border-right:none}
 
-/* Bar */
 .bar{border-radius:6px;padding:5px 6px 6px;cursor:pointer}
 .bar:hover{filter:brightness(.95)}
-
-/* IN/OUT chips row — flex, IN left OUT right, neither stretches */
 .bar-chips{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .chip-in{font-size:8px;font-weight:800;color:#fff;padding:3px 9px;border-radius:4px;display:inline-block}
 .chip-out{font-size:8px;font-weight:800;color:#fff;background:#ef4444;padding:3px 9px;border-radius:4px;display:inline-block}
-
-/* Detail rows */
-.bar-name{font-size:10.5px;font-weight:700;line-height:1.3;word-break:break-word;margin-bottom:1px}
+.bar-name{font-size:10px;font-weight:700;line-height:1.3;word-break:break-word;margin-bottom:1px}
 .bar-nights{font-size:7.5px;color:#64748b;margin-bottom:3px}
-.binfo{font-size:8.5px;font-weight:700;padding:2px 5px;border-radius:4px;border:1px solid transparent;line-height:1.4;word-break:break-word;margin-top:2px;display:block}
+.binfo{font-size:8px;font-weight:700;padding:2px 5px;border-radius:4px;border:1px solid transparent;line-height:1.4;word-break:break-word;margin-top:2px;display:block}
 .bi-unit{background:#e0f2fe;color:#0369a1;border-color:#bae6fd}
 .bi-tot{background:#ede9fe;color:#4c1d95;border-color:#c4b5fd}
 .bi-dep{background:#dcfce7;color:#15803d;border-color:#bbf7d0}
@@ -108,40 +114,81 @@ select option{background:#1e3a5f;color:#fff}
 .bi-paid{background:#d1fae5;color:#059669;border-color:#a7f3d0}
 .bi-note{background:#f3e8ff;color:#7c3aed;border-color:#e9d5ff;font-style:italic}
 .bi-unclear{background:#fef9c3;color:#92400e;border-color:#fde68a}
-.bar-cont{font-size:9.5px;font-weight:600;font-style:italic;opacity:.7;word-break:break-word;padding:4px 0}
-
+.bar-cont{font-size:9px;font-weight:600;font-style:italic;opacity:.7;word-break:break-word;padding:3px 0}
 .wk-gap{height:4px;background:#f0f4f8;border-bottom:2px solid #dde3ea}
 
-/* Month summary */
 .msum{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid #e2e8f0}
-.ms{padding:8px 4px;text-align:center;border-right:1px solid #e2e8f0}
+.ms{padding:7px 4px;text-align:center;border-right:1px solid #e2e8f0}
 .ms:last-child{border-right:none}
 .ms:nth-child(odd){background:#f8fafc}
-.ms-icon{font-size:12px}
+.ms-icon{font-size:11px}
 .ms-val{font-size:10px;font-weight:800;color:#0f172a;margin-top:1px}
-.ms-lbl{font-size:6.5px;font-weight:600;color:#94a3b8;margin-top:1px;letter-spacing:.04em;text-transform:uppercase}
+.ms-lbl{font-size:6px;font-weight:600;color:#94a3b8;margin-top:1px;letter-spacing:.04em;text-transform:uppercase}
 
-/* Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:#fff;border-radius:14px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.modal-hdr{background:#1e3a5f;padding:14px 16px;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
-.modal-hdr h3{color:#fff;font-size:15px;font-weight:800}
-.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
-.modal-body{padding:16px}
-.form-group{margin-bottom:13px}
+/* ── TAB 2: BOOKINGS & TRANSACTIONS ── */
+.form-section{background:#fff;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.form-section-title{font-size:13px;font-weight:800;color:#1e293b;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.form-group{margin-bottom:12px}
 .form-label{font-size:11px;font-weight:700;color:#374151;margin-bottom:4px;display:block}
-.form-hint{font-size:9px;color:#94a3b8;margin-bottom:4px;display:block}
-.form-input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;color:#1e293b}
+.form-input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;color:#1e293b;transition:border-color .15s}
 .form-input:focus{outline:none;border-color:#3b82f6}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form-select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;color:#1e293b;background:#fff}
 .form-select:focus{outline:none;border-color:#3b82f6}
-.bal-display{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:13px;color:#64748b;font-weight:600}
+.bal-display{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:13px;font-weight:600;color:#64748b}
 .bal-owing{color:#dc2626}
 .bal-paid{color:#059669}
+
+/* Recent transactions list */
+.txn-list{margin-top:10px}
+.txn-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f1f5f9}
+.txn-row:last-child{border-bottom:none}
+.txn-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.txn-info{flex:1;min-width:0}
+.txn-name{font-size:11px;font-weight:700;color:#1e293b}
+.txn-meta{font-size:9px;color:#64748b;margin-top:1px}
+.txn-amt{font-size:12px;font-weight:800;text-align:right;flex-shrink:0}
+
+/* ── TAB 3: PENDING PAYMENTS ── */
+.pending-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.pending-row:last-child{border-bottom:none}
+.pending-row:nth-child(even){background:#fafafa}
+.pending-row:hover{background:#fef2f2}
+.pending-swatch{width:4px;height:44px;border-radius:2px;flex-shrink:0}
+.pending-info{flex:1;min-width:0}
+.pending-name{font-size:11px;font-weight:700;color:#1e293b;word-break:break-word}
+.pending-meta{font-size:9px;color:#64748b;margin-top:1px}
+.pending-phone{font-size:10px;color:#2563eb;font-weight:600;margin-top:2px}
+.pending-amounts{text-align:right;flex-shrink:0}
+.pending-tot{font-size:9px;color:#4c1d95;font-weight:600}
+.pending-dep{font-size:9px;color:#15803d;font-weight:600}
+.pending-other{font-size:9px;color:#0369a1;font-weight:600}
+.pending-bal{font-size:13px;font-weight:800;color:#dc2626}
+
+/* ── TAB 4: CHARTS ── */
+.chart-wrap{background:#fff;border-radius:12px;padding:14px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.chart-title{font-size:13px;font-weight:800;color:#1e293b;margin-bottom:12px}
+.chart-container{position:relative;width:100%;height:220px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-hdr{background:#1e3a5f;padding:13px 16px;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
+.modal-hdr h3{color:#fff;font-size:14px;font-weight:800}
+.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.modal-body{padding:14px}
 .modal-footer{padding:12px 16px;border-top:1px solid #f1f5f9;display:flex;gap:8px;position:sticky;bottom:0;background:#fff;border-radius:0 0 14px 14px}
 .btn-full{flex:1}
 .btn-del{background:#fff;color:#dc2626;border:1.5px solid #dc2626;font-size:11px;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit}
+.btn-del:hover{background:#fef2f2}
+
+/* Payment history in modal */
+.payment-history{background:#f8fafc;border-radius:8px;padding:10px;margin-top:8px}
+.payment-history-title{font-size:10px;font-weight:700;color:#475569;margin-bottom:8px}
+.payment-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #e2e8f0;font-size:11px}
+.payment-item:last-child{border-bottom:none}
+.payment-item-date{color:#64748b;font-size:9px}
+.payment-item-amt{font-weight:700;color:#15803d}
 
 .saving-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:flex;align-items:center;justify-content:center}
 .saving-box{background:#fff;border-radius:12px;padding:24px 32px;text-align:center;font-weight:700;font-size:14px}
@@ -151,90 +198,266 @@ select option{background:#1e3a5f;color:#fff}
 <body>
 
 <div class="app-header">
-  <div style="font-size:24px;margin-bottom:2px">🏡</div>
+  <div style="font-size:22px;margin-bottom:2px">🏡</div>
   <h1>Onde-onde Homestay</h1>
-  <p id="app-subtitle">Selangor · Malaysia</p>
+  <p>Selangor · Malaysia</p>
 </div>
 
-<div class="toolbar">
-  <div class="toolbar-left">
-    <button class="btn btn-green" onclick="openModal()">＋ Tempahan Baru</button>
-    <span style="color:rgba(255,255,255,.3);font-size:11px">|</span>
-    <span style="color:rgba(255,255,255,.6);font-size:11px;font-weight:600">💾</span>
-    <select id="dlYear"></select>
-    <select id="dlFrom"></select>
-    <span style="color:rgba(255,255,255,.4);font-size:11px">—</span>
-    <select id="dlTo"></select>
-    <button class="btn btn-blue" onclick="downloadMonths()">⬇ Kalender</button>
-    <button class="btn btn-red" onclick="downloadOutstanding()">⬇ Baki</button>
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)"><span class="tab-icon">📅</span>Kalender</div>
+  <div class="tab" onclick="switchTab(1)"><span class="tab-icon">✏️</span>Tempahan</div>
+  <div class="tab" onclick="switchTab(2)"><span class="tab-icon">⏳</span>Baki</div>
+  <div class="tab" onclick="switchTab(3)"><span class="tab-icon">📊</span>Analitik</div>
+</div>
+
+<!-- TAB 1: CALENDAR -->
+<div id="tab-0" class="tab-content active">
+  <div class="cal-toolbar">
+    <div class="cal-toolbar-left">
+      <select id="dlYear"></select>
+      <select id="dlFrom"></select>
+      <span style="color:rgba(255,255,255,.4);font-size:11px">—</span>
+      <select id="dlTo"></select>
+      <button class="btn btn-blue btn-sm" onclick="downloadMonths()">⬇ Kalender</button>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="loadData()">🔄 Refresh</button>
   </div>
-  <button class="btn btn-ghost" onclick="loadData()">🔄 Refresh</button>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>Penginapan</div>
+    <div class="leg"><div class="leg-dot" style="background:#4c1d95"></div>Jumlah</div>
+    <div class="leg"><div class="leg-dot" style="background:#15803d"></div>Deposit</div>
+    <div class="leg"><div class="leg-dot" style="background:#dc2626"></div>Baki</div>
+    <div class="leg"><div class="leg-dot" style="background:#059669"></div>✅ Selesai</div>
+    <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>⚠️ Semak</div>
+    <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>Cuti Umum</div>
+    <div class="leg"><div class="leg-dot" style="background:#8b5cf6"></div>Cuti Sekolah</div>
+  </div>
+  <div id="cal-root"><div class="loading">⏳ Memuatkan...</div></div>
 </div>
 
-<div class="legend">
-  <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>Penginapan</div>
-  <div class="leg"><div class="leg-dot" style="background:#4c1d95"></div>Jumlah</div>
-  <div class="leg"><div class="leg-dot" style="background:#15803d"></div>Deposit</div>
-  <div class="leg"><div class="leg-dot" style="background:#dc2626"></div>Baki</div>
-  <div class="leg"><div class="leg-dot" style="background:#059669"></div>✅ Selesai</div>
-  <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>⚠️ Semak</div>
-  <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>Cuti Umum</div>
-  <div class="leg"><div class="leg-dot" style="background:#8b5cf6"></div>Cuti Sekolah</div>
+<!-- TAB 2: BOOKINGS & TRANSACTIONS -->
+<div id="tab-1" class="tab-content">
+  <!-- New Booking -->
+  <div class="form-section">
+    <div class="form-section-title">🏠 Tempahan Baru</div>
+    <div class="form-group">
+      <label class="form-label">Nama Tetamu *</label>
+      <input id="b-name" class="form-input" type="text" placeholder="cth: Puan Aminah"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">No. Telefon <span style="font-weight:400;color:#94a3b8">(pilihan)</span></label>
+      <input id="b-phone" class="form-input" type="tel" placeholder="cth: 012-3456789"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Check-in *</label>
+        <input id="b-ci" class="form-input" type="date"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Check-out *</label>
+        <input id="b-co" class="form-input" type="date"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Bil. Unit</label>
+        <input id="b-units" class="form-input" type="number" min="1" max="4" placeholder="1–4"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">No. Unit</label>
+        <input id="b-room" class="form-input" type="text" placeholder="cth: H1-H4"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Jumlah Caj (RM) *</label>
+      <input id="b-tot" class="form-input" type="number" min="0" placeholder="0" oninput="calcBal()"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Deposit (RM)</label>
+      <input id="b-dep" class="form-input" type="number" min="0" placeholder="0" oninput="calcBal()"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Baki Semasa</label>
+      <div id="b-bal" class="bal-display">—</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select id="b-status" class="form-select">
+        <option value="Active">Active</option>
+        <option value="Paid">Paid — Selesai Bayar</option>
+        <option value="Unclear">Unclear — Perlu Semak</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nota <span style="font-weight:400;color:#94a3b8">(pilihan)</span></label>
+      <input id="b-note" class="form-input" type="text" placeholder="cth: 16 pax, early check-in"/>
+    </div>
+    <button class="btn btn-green" style="width:100%" onclick="saveNewBooking()">💾 Simpan Tempahan</button>
+  </div>
+
+  <!-- Record Payment -->
+  <div class="form-section">
+    <div class="form-section-title">💵 Rekod Pembayaran</div>
+    <div class="form-group">
+      <label class="form-label">Pilih Tempahan *</label>
+      <select id="p-booking" class="form-select" onchange="onBookingSelected()">
+        <option value="">— Pilih tetamu —</option>
+      </select>
+    </div>
+    <div id="p-booking-info" style="display:none;background:#f8fafc;border-radius:8px;padding:10px;margin-bottom:12px;font-size:11px">
+      <div id="p-booking-detail"></div>
+      <div id="p-payment-history" class="payment-history" style="margin-top:8px"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tarikh Bayaran *</label>
+        <input id="p-date" class="form-input" type="date"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jumlah (RM) *</label>
+        <input id="p-amt" class="form-input" type="number" min="0" placeholder="0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nota <span style="font-weight:400;color:#94a3b8">(pilihan)</span></label>
+      <input id="p-note" class="form-input" type="text" placeholder="cth: Bayaran akhir"/>
+    </div>
+    <button class="btn btn-blue" style="width:100%" onclick="savePayment()">💾 Rekod Bayaran</button>
+  </div>
+
+  <!-- Record Expense -->
+  <div class="form-section">
+    <div class="form-section-title">💸 Rekod Perbelanjaan</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tarikh *</label>
+        <input id="e-date" class="form-input" type="date"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jumlah (RM) *</label>
+        <input id="e-amt" class="form-input" type="number" min="0" placeholder="0"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategori *</label>
+      <select id="e-cat" class="form-select">
+        <option value="">— Pilih kategori —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nota <span style="font-weight:400;color:#94a3b8">(pilihan)</span></label>
+      <input id="e-note" class="form-input" type="text" placeholder="cth: Gaji bulan Mei"/>
+    </div>
+    <button class="btn btn-amber" style="width:100%" onclick="saveExpense()">💾 Rekod Perbelanjaan</button>
+  </div>
 </div>
 
-<div id="root"><div class="loading">⏳ Memuatkan data...</div></div>
+<!-- TAB 3: PENDING PAYMENTS -->
+<div id="tab-2" class="tab-content">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <span style="color:rgba(255,255,255,.7);font-size:12px;font-weight:700">Baki Belum Bayar</span>
+    <button class="btn btn-red btn-sm" onclick="downloadOutstanding()">⬇ Simpan</button>
+  </div>
+  <div class="card" id="pending-panel">
+    <div class="card-hdr" style="background:#7f1d1d">
+      <h2 style="color:#fff">⏳ Baki Belum Bayar</h2>
+      <span id="pending-total" style="color:#fca5a5;font-size:12px;font-weight:700"></span>
+    </div>
+    <div id="pending-list"><div class="loading" style="color:#64748b;padding:20px">Tiada rekod.</div></div>
+  </div>
+</div>
 
-<!-- Modal -->
-<div id="modal" class="modal-overlay" style="display:none" onclick="closeModalOutside(event)">
+<!-- TAB 4: ANALYTICS -->
+<div id="tab-3" class="tab-content">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <span style="color:rgba(255,255,255,.7);font-size:12px;font-weight:700">Analitik</span>
+    <select id="chart-year" onchange="renderCharts()" style="font-size:11px"></select>
+  </div>
+
+  <!-- Year on Year -->
+  <div style="color:rgba(255,255,255,.5);font-size:10px;font-weight:700;letter-spacing:.06em;margin-bottom:8px;text-transform:uppercase">Perbandingan Tahunan</div>
+  <div class="chart-wrap">
+    <div class="chart-title">📈 Hasil & Perbelanjaan Tahunan</div>
+    <div class="chart-container"><canvas id="chart-yoy-revenue"></canvas></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">💰 Untung Bersih Tahunan</div>
+    <div class="chart-container"><canvas id="chart-yoy-profit"></canvas></div>
+  </div>
+
+  <!-- Month on Month -->
+  <div style="color:rgba(255,255,255,.5);font-size:10px;font-weight:700;letter-spacing:.06em;margin-bottom:8px;text-transform:uppercase;margin-top:4px">Bulanan</div>
+
+  <!-- Stat cards -->
+  <div class="stat-grid" id="stat-cards"></div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">📊 Hasil Bulanan (Diterima vs Tertunggak)</div>
+    <div class="chart-container"><canvas id="chart-monthly-revenue"></canvas></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">💸 Perbelanjaan Bulanan Mengikut Kategori</div>
+    <div class="chart-container"><canvas id="chart-monthly-expenses"></canvas></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">📉 Untung Bersih Bulanan</div>
+    <div class="chart-container"><canvas id="chart-monthly-profit"></canvas></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">🏠 Bilangan Tempahan Bulanan</div>
+    <div class="chart-container"><canvas id="chart-monthly-bookings"></canvas></div>
+  </div>
+</div>
+
+<!-- Edit Booking Modal -->
+<div id="edit-modal" class="modal-overlay" style="display:none" onclick="closeEditOutside(event)">
   <div class="modal">
     <div class="modal-hdr">
-      <h3 id="modal-title">Tempahan Baru</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h3>Edit Tempahan</h3>
+      <button class="modal-close" onclick="closeEdit()">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">Nama Tetamu *</label>
-        <input id="f-name" class="form-input" type="text" placeholder="cth: Puan Aminah"/>
+        <input id="e-name" class="form-input" type="text"/>
       </div>
       <div class="form-group">
-        <label class="form-label">No. Telefon <span style="font-weight:400;color:#94a3b8">(pilihan)</span></label>
-        <input id="f-phone" class="form-input" type="tel" placeholder="cth: 012-3456789"/>
+        <label class="form-label">No. Telefon</label>
+        <input id="e-phone" class="form-input" type="tel"/>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Check-in *</label>
-          <input id="f-ci" class="form-input" type="date"/>
+          <input id="e-ci" class="form-input" type="date"/>
         </div>
         <div class="form-group">
           <label class="form-label">Check-out *</label>
-          <input id="f-co" class="form-input" type="date"/>
+          <input id="e-co" class="form-input" type="date"/>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Bil. Unit</label>
-          <input id="f-units" class="form-input" type="number" min="1" max="4" placeholder="1–4"/>
+          <input id="e-units" class="form-input" type="number" min="1" max="4"/>
         </div>
         <div class="form-group">
           <label class="form-label">No. Unit</label>
-          <input id="f-room" class="form-input" type="text" placeholder="cth: H1-H4"/>
+          <input id="e-room" class="form-input" type="text"/>
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Jumlah Caj (RM) *</label>
-        <input id="f-tot" class="form-input" type="number" min="0" placeholder="0" oninput="calcBalance()"/>
+        <label class="form-label">Jumlah Caj (RM)</label>
+        <input id="e-tot" class="form-input" type="number" min="0"/>
       </div>
       <div class="form-group">
-        <label class="form-label">Deposit Diterima (RM)</label>
-        <input id="f-dep" class="form-input" type="number" min="0" placeholder="0" oninput="calcBalance()"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Baki Tertunggak (RM)</label>
-        <div id="f-bal" class="bal-display">—</div>
+        <label class="form-label">Deposit (RM)</label>
+        <input id="e-dep" class="form-input" type="number" min="0"/>
       </div>
       <div class="form-group">
         <label class="form-label">Status</label>
-        <select id="f-status" class="form-select">
+        <select id="e-status" class="form-select">
           <option value="Active">Active</option>
           <option value="Paid">Paid — Selesai Bayar</option>
           <option value="Unclear">Unclear — Perlu Semak</option>
@@ -242,13 +465,15 @@ select option{background:#1e3a5f;color:#fff}
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Nota <span style="font-weight:400;color:#94a3b8">(pilihan)</span></label>
-        <input id="f-note" class="form-input" type="text" placeholder="cth: 16 pax, early check-in"/>
+        <label class="form-label">Nota</label>
+        <input id="e-note" class="form-input" type="text"/>
       </div>
+      <!-- Payment history -->
+      <div id="e-payment-history"></div>
     </div>
     <div class="modal-footer">
-      <button id="btn-del" class="btn-del" style="display:none" onclick="deleteBooking()">🗑 Batal</button>
-      <button class="btn btn-blue btn-full" onclick="saveBooking()">💾 Simpan</button>
+      <button class="btn-del" onclick="cancelBooking()">🗑 Batal Tempahan</button>
+      <button class="btn btn-blue btn-full" onclick="saveEdit()">💾 Simpan</button>
     </div>
   </div>
 </div>
@@ -261,18 +486,13 @@ select option{background:#1e3a5f;color:#fff}
 // ── CONFIG ────────────────────────────────────────────────────────────────
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0uI0DngCktUJrCFqmZL-8q_bsDGOZodxgiB9Hv178XXHsSFA8N2NwDOwCUsrfRuysmw/exec";
 const SHEET_ID = "11OCRfzmmOCa7EuQAEdP-I6eHroF_96zQw98R0w0OvYI";
-
-// Sheet tabs
-const CSV_BOOKINGS   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Bookings`;
-const CSV_HOLIDAYS   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Holidays`;
-const CSV_SCHOOLHOLS = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=SchoolHolidays`;
+const csv = tab => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}&t=${Date.now()}`;
 
 // ── STATE ─────────────────────────────────────────────────────────────────
-let ALL_BOOKINGS = [];
-let PH = {};   // { "2026-05-01": "Labour Day" }
-let SH = new Set(); // Set of date strings
-let CURRENT_YEAR = new Date().getFullYear();
-let DISPLAY_MONTHS = [0,1,2,3,4,5,6,7,8,9,10,11]; // all months
+let ALL_BOOKINGS=[], ALL_PAYMENTS=[], ALL_EXPENSES=[], ALL_CATEGORIES=[];
+let PH={}, SH=new Set();
+let editingId=null;
+let charts={};
 
 const PAL=[
   {bg:"#dbeafe",bd:"#3b82f6",tx:"#1e40af"},{bg:"#d1fae5",bd:"#10b981",tx:"#065f46"},
@@ -284,6 +504,7 @@ const PAL=[
 const MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const MN_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DOW=["MON","TUE","WED","THU","FRI","SAT","SUN"];
+const DAY_ABBR=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 // ── HELPERS ───────────────────────────────────────────────────────────────
 function df(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
@@ -298,6 +519,7 @@ function toDate(v){
   if(m)return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
   const d=new Date(v);return isNaN(d)?"":df(d);
 }
+function parseNum(v){const n=parseFloat(v);return isNaN(n)?null:n;}
 
 // ── CSV PARSE ─────────────────────────────────────────────────────────────
 function parseCSV(text){
@@ -323,21 +545,24 @@ function rowToBooking(r,id){
   const ci=toDate(r["check-in"]||r["checkin"]||"");
   const co=toDate(r["check-out"]||r["checkout"]||"");
   if(!ci||!co)return null;
-  const tot=r["total"]?parseFloat(r["total"]):null;
-  const dep=r["deposit"]?parseFloat(r["deposit"]):null;
-  const bal=status==="paid"?0:(r["balance"]?parseFloat(r["balance"]):null);
+  const tot=parseNum(r["total"]);
+  const dep=parseNum(r["deposit"]);
+  // Balance comes from sheet formula (Total - Deposit - OtherPayments)
+  const bal=status==="paid"?0:parseNum(r["balance"]);
+  const otherPay=parseNum(r["other payments"]||r["otherpayments"]||"0")||0;
   const units=(r["units"]||r["unit"]||"").trim();
   const room=(r["room"]||r["rooms"]||"").trim();
   const u=units&&room?`${units}·${room}`:units||room||"";
-  return{id,ci,co,name:(r["name"]||"").trim(),phone:(r["phone"]||r["telefon"]||r["no telefon"]||"").trim(),
-    u,units,room,tot,dep,bal,status,note:(r["note"]||r["notes"]||"").trim(),rowIndex:id+1};
+  return{id,ci,co,name:(r["name"]||"").trim(),
+    phone:(r["phone"]||r["telefon"]||"").trim(),
+    u,units,room,tot,dep,bal,otherPay,status,
+    note:(r["note"]||r["notes"]||"").trim(),rowIndex:id+1};
 }
 
 function assignLanes(arr){
   const sorted=[...arr].sort((a,b)=>a.ci.localeCompare(b.ci));
   const ends=[];
   return sorted.map(b=>{
-    // strict less-than: checkout day X and checkin day X go in different lanes
     let lane=ends.findIndex(e=>e<b.ci);
     if(lane===-1){lane=ends.length;ends.push(null);}
     ends[lane]=b.co;
@@ -345,7 +570,6 @@ function assignLanes(arr){
   });
 }
 
-// ── WEEK GRID with prev/next month filler ─────────────────────────────────
 function getWeeks(yr,m){
   const first=new Date(yr,m,1),last=new Date(yr,m+1,0);
   const pad=(first.getDay()+6)%7;
@@ -365,7 +589,6 @@ function barHTML(b,isStart,isEnd){
   const uCount=uMatch?uMatch[1]:"";
   const uRoom=uMatch?uMatch[2]:(b.u||"");
   const isUnclear=b.status==="unclear";
-
   const borderL=isStart?`4px solid ${p.bd}`:`2px dashed ${p.bd}88`;
   const borderR=isEnd?`2px solid ${p.bd}`:`2px dashed ${p.bd}88`;
   const rad=isStart&&isEnd?"6px":isStart?"6px 0 0 6px":isEnd?"0 6px 6px 0":"0";
@@ -373,34 +596,29 @@ function barHTML(b,isStart,isEnd){
   const barBd=isUnclear?"#f59e0b":p.bd;
   const chipBg=isUnclear?"#d97706":p.bd;
   const nameCol=isUnclear?"#92400e":p.tx;
+  const style=`background:${barBg};border-top:2px solid ${barBd};border-bottom:2px solid ${barBd};border-left:${borderL};border-right:${borderR};border-radius:${rad}`;
 
-  const barStyle=`background:${barBg};border-top:2px solid ${barBd};border-bottom:2px solid ${barBd};border-left:${borderL};border-right:${borderR};border-radius:${rad}`;
-
-  // Continuation bar (booking started previous week)
   if(!isStart){
-    return `<div class="bar" style="${barStyle}" onclick="editBooking(${b.id})">
-      <div class="bar-chips">
-        <span></span>
-        ${isEnd ? `<span class="chip-out">OUT</span>` : `<span></span>`}
-      </div>
+    return `<div class="bar" style="${style}" onclick="openEdit(${b.id})">
+      <div class="bar-chips"><span></span>${isEnd?`<span class="chip-out">OUT</span>`:`<span></span>`}</div>
       <div class="bar-cont" style="color:${nameCol}">↳ ${b.name}</div>
     </div>`;
   }
 
-  // Info rows — Total → Deposit → Balance
   let info="";
-  if(b.u)           info+=`<span class="binfo bi-unit">🏠 ${uCount} unit · ${uRoom}</span>`;
-  if(b.tot!=null)   info+=`<span class="binfo bi-tot">💰 Jumlah: RM${b.tot.toLocaleString()}</span>`;
-  if(b.dep!=null)   info+=`<span class="binfo bi-dep">💵 Deposit: RM${b.dep.toLocaleString()}</span>`;
+  if(b.u)         info+=`<span class="binfo bi-unit">🏠 ${uCount} unit · ${uRoom}</span>`;
+  if(b.tot!=null) info+=`<span class="binfo bi-tot">💰 Jumlah: RM${b.tot.toLocaleString()}</span>`;
+  if(b.dep!=null) info+=`<span class="binfo bi-dep">💵 Deposit: RM${b.dep.toLocaleString()}</span>`;
+  if(b.otherPay>0)info+=`<span class="binfo bi-dep">💳 Bayaran Lain: RM${b.otherPay.toLocaleString()}</span>`;
   if(b.bal!=null&&b.bal>0) info+=`<span class="binfo bi-bal">⏳ Baki: RM${b.bal.toLocaleString()}</span>`;
-  if(b.bal===0)     info+=`<span class="binfo bi-paid">✅ Selesai Bayar</span>`;
-  if(isUnclear)     info+=`<span class="binfo bi-unclear">⚠️ Semak maklumat</span>`;
+  if(b.bal!=null&&b.bal<=0) info+=`<span class="binfo bi-paid">✅ Selesai Bayar</span>`;
+  if(isUnclear)   info+=`<span class="binfo bi-unclear">⚠️ Semak maklumat</span>`;
   if(b.note&&!isUnclear) info+=`<span class="binfo bi-note">📝 ${b.note}</span>`;
 
-  return `<div class="bar" style="${barStyle}" onclick="editBooking(${b.id})">
+  return `<div class="bar" style="${style}" onclick="openEdit(${b.id})">
     <div class="bar-chips">
       <span class="chip-in" style="background:${chipBg}">IN</span>
-      ${isEnd ? `<span class="chip-out">OUT</span>` : `<span></span>`}
+      ${isEnd?`<span class="chip-out">OUT</span>`:`<span></span>`}
     </div>
     <div class="bar-name" style="color:${nameCol}">${b.name}</div>
     <div class="bar-nights">${n} malam</div>
@@ -408,50 +626,14 @@ function barHTML(b,isStart,isEnd){
   </div>`;
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────
+// ── RENDER CALENDAR ───────────────────────────────────────────────────────
 function renderCalendar(){
-  const bookings=ALL_BOOKINGS;
-  const BKGS=assignLanes(bookings.filter(b=>b.status!=="cancelled"));
-  const root=document.getElementById("root");
+  const BKGS=assignLanes(ALL_BOOKINGS.filter(b=>b.status!=="cancelled"));
+  const root=document.getElementById("cal-root");
   root.innerHTML="";
+  const yr=parseInt(document.getElementById("dlYear").value)||new Date().getFullYear();
 
-  // Outstanding panel
-  const unpaid=BKGS.filter(b=>b.bal!=null&&b.bal>0);
-  if(unpaid.length){
-    const total=unpaid.reduce((s,b)=>s+(b.bal||0),0);
-    let rows="";
-    unpaid.forEach(b=>{
-      const p=PAL[b.id%PAL.length];
-      rows+=`<div class="out-row" onclick="editBooking(${b.id})">
-        <div class="out-swatch" style="background:${p.bd}"></div>
-        <div class="out-info">
-          <div class="out-name">${b.name}</div>
-          <div class="out-meta">${fmtDate(b.ci)} → ${fmtDate(b.co)}${b.u?" · "+b.u:""}</div>
-          ${b.phone?`<div class="out-phone">📞 ${b.phone}</div>`:""}
-        </div>
-        <div class="out-amounts">
-          ${b.tot!=null?`<div class="out-tot">Jumlah: RM${b.tot.toLocaleString()}</div>`:""}
-          ${b.dep!=null?`<div class="out-dep">Deposit: RM${b.dep.toLocaleString()}</div>`:""}
-          <div class="out-bal">Baki: RM${b.bal.toLocaleString()}</div>
-        </div>
-      </div>`;
-    });
-    const wrap=document.createElement("div");
-    wrap.className="out-wrap";
-    wrap.innerHTML=`<div class="out-panel" id="out-panel">
-      <div class="out-hdr"><h2>⏳ Baki Belum Bayar</h2><span class="out-total">Jumlah: RM ${total.toLocaleString()}</span></div>
-      ${rows}
-    </div>`;
-    root.appendChild(wrap);
-  }
-
-  // Get year from selector
-  const yr=parseInt(document.getElementById("dlYear").value)||CURRENT_YEAR;
-
-  // Months to show — all 12 for the selected year
-  const allMonths=[0,1,2,3,4,5,6,7,8,9,10,11];
-
-  allMonths.forEach(m=>{
+  for(let m=0;m<12;m++){
     const weeks=getWeeks(yr,m);
     const mS=`${yr}-${String(m+1).padStart(2,"0")}-01`;
     const mE=df(new Date(yr,m+1,0)),mEN=addD(mE,1);
@@ -466,32 +648,26 @@ function renderCalendar(){
       const thisMo=week.filter(c=>c.tm).map(c=>c.date);
       const wS=dates[0],wE=dates[6],wNext=addD(wE,1);
       const hasPH=thisMo.some(d=>PH[d]),hasSH=thisMo.some(d=>SH.has(d));
-
-      // Week label with date range
-      const wkStart=week.find(c=>c.tm);
-      const wkEnd=[...week].reverse().find(c=>c.tm);
+      const wkStart=week.find(c=>c.tm),wkEnd=[...week].reverse().find(c=>c.tm);
       const rangeStr=wkStart&&wkEnd?`(${fmtDate(wkStart.date)} – ${fmtDate(wkEnd.date)})`:"";
 
-      tbody+=`<tr><td colspan="7" style="padding:0">
-        <div class="wk-lbl">
-          <span class="wk-lbl-text">WEEK ${wi+1}</span>
-          <span class="wk-lbl-range">${rangeStr}</span>
-          ${hasPH?'<span class="wk-pill wkph">Cuti Umum</span>':""}
-          ${hasSH?'<span class="wk-pill wksh">Cuti Sekolah</span>':""}
-        </div>
-      </td></tr>`;
+      tbody+=`<tr><td colspan="7" style="padding:0"><div class="wk-lbl">
+        <span class="wk-lbl-text">WEEK ${wi+1}</span>
+        <span class="wk-lbl-range">${rangeStr}</span>
+        ${hasPH?'<span class="wk-pill wkph">Cuti Umum</span>':""}
+        ${hasSH?'<span class="wk-pill wksh">Cuti Sekolah</span>':""}
+      </div></td></tr>`;
 
-      // Date row
       tbody+="<tr>";
       week.forEach((cell,di)=>{
         const d=cell.date,tm=cell.tm;
         const isPH=tm&&PH[d],isSH=tm&&!isPH&&SH.has(d),isSun=di===6;
+        const abbr=DAY_ABBR[new Date(d).getDay()];
         let cls="dc"+(tm?"":" dim")+(isPH?" ph":"")+(isSH?" sh":"")+(isSun?" sun":"");
-        const dayAbbr=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(d).getDay()];
         tbody+=`<td class="${cls}">
-          <div style="display:flex;align-items:baseline;gap:3px">
+          <div style="display:flex;align-items:baseline;gap:2px">
             <span class="dn">${parseInt(d.slice(8))}</span>
-            <span style="font-size:7px;font-style:italic;color:${isSun?"#dc2626":isPH?"#92400e":"#94a3b8"};font-weight:600">${tm?dayAbbr:""}</span>
+            ${tm?`<span class="day-abbr">${abbr}</span>`:""}
           </div>`;
         if(isPH)tbody+=`<div class="dph">${PH[d]}</div>`;
         else if(isSH)tbody+=`<div class="dsh">Cuti Sekolah</div>`;
@@ -499,36 +675,32 @@ function renderCalendar(){
       });
       tbody+="</tr>";
 
-      // Bar rows — one per lane
       const wBks=BKGS.filter(b=>b.ci<=wE&&b.co>=wS);
       const maxLane=wBks.length?Math.max(...wBks.map(b=>b.lane)):-1;
       for(let lane=0;lane<=maxLane;lane++){
         const occ=new Array(7).fill(null);
         wBks.filter(b=>b.lane===lane).forEach(b=>{
-          // Bar spans from ci to co (inclusive) — checkout column is part of bar
-          const bS = b.ci >= wS ? b.ci : wS;
-          const bE = b.co <= wE ? b.co : wE;
-          const cS = dates.indexOf(bS);
-          // If co is beyond this week, bar extends to col 6 (Sunday)
-          const cE = b.co <= wE ? dates.indexOf(bE) : 6;
-          if(cS === -1 || cE < cS) return;
-          const isStart = b.ci >= wS;
-          // isEnd only true if checkout is actually IN this week (not just equal to start of next week)
-          const isEnd = b.co <= wE;
-          for(let c = cS; c <= cE; c++) occ[c] = {b, cS, cE, isStart, isEnd};
+          const bS=b.ci>=wS?b.ci:wS;
+          const bE=b.co<=wE?b.co:wE;
+          const cS=dates.indexOf(bS);
+          const cE=b.co<=wE?dates.indexOf(bE):6;
+          if(cS===-1||cE<cS)return;
+          const isStart=b.ci>=wS;
+          const isEnd=b.co<=wE;
+          for(let c=cS;c<=cE;c++) occ[c]={b,cS,cE,isStart,isEnd};
         });
-        tbody += "<tr>";
-        let ci = 0;
-        while(ci < 7){
-          if(!occ[ci]){ tbody += `<td class="bc"></td>`; ci++; }
+        tbody+="<tr>";
+        let ci=0;
+        while(ci<7){
+          if(!occ[ci]){tbody+=`<td class="bc"></td>`;ci++;}
           else{
-            const {b, cS, cE, isStart, isEnd} = occ[ci];
-            const span = cE - cS + 1;
-            tbody += `<td class="bc" colspan="${span}">${barHTML(b, isStart, isEnd)}</td>`;
-            ci += span;
+            const{b,cS,cE,isStart,isEnd}=occ[ci];
+            const span=cE-cS+1;
+            tbody+=`<td class="bc" colspan="${span}">${barHTML(b,isStart,isEnd)}</td>`;
+            ci+=span;
           }
         }
-        tbody += "</tr>";
+        tbody+="</tr>";
       }
       tbody+=`<tr><td colspan="7" class="wk-gap"></td></tr>`;
     });
@@ -555,183 +727,452 @@ function renderCalendar(){
       </div>
     </div>`;
     root.appendChild(outer);
+  }
+
+  // Populate selectors
+  ["dlFrom","dlTo"].forEach(id=>{
+    document.getElementById(id).innerHTML=Array.from({length:12},(_,i)=>`<option value="${i}">${MN[i]}</option>`).join("");
+  });
+  document.getElementById("dlTo").value=11;
+}
+
+// ── RENDER PENDING ────────────────────────────────────────────────────────
+function renderPending(){
+  const unpaid=ALL_BOOKINGS.filter(b=>b.status!=="cancelled"&&b.bal!=null&&b.bal>0);
+  const total=unpaid.reduce((s,b)=>s+(b.bal||0),0);
+  document.getElementById("pending-total").textContent=`Jumlah: RM ${total.toLocaleString()}`;
+  const list=document.getElementById("pending-list");
+  if(!unpaid.length){list.innerHTML='<div style="padding:16px;text-align:center;color:#94a3b8;font-size:12px">Tiada baki tertunggak 🎉</div>';return;}
+  list.innerHTML=unpaid.map(b=>{
+    const p=PAL[b.id%PAL.length];
+    return `<div class="pending-row" onclick="openEdit(${b.id})">
+      <div class="pending-swatch" style="background:${p.bd}"></div>
+      <div class="pending-info">
+        <div class="pending-name">${b.name}</div>
+        <div class="pending-meta">${fmtDate(b.ci)} → ${fmtDate(b.co)}${b.u?" · "+b.u:""}</div>
+        ${b.phone?`<div class="pending-phone">📞 ${b.phone}</div>`:""}
+      </div>
+      <div class="pending-amounts">
+        ${b.tot!=null?`<div class="pending-tot">Jumlah: RM${b.tot.toLocaleString()}</div>`:""}
+        ${b.dep!=null?`<div class="pending-dep">Deposit: RM${b.dep.toLocaleString()}</div>`:""}
+        ${b.otherPay>0?`<div class="pending-other">Bayaran Lain: RM${b.otherPay.toLocaleString()}</div>`:""}
+        <div class="pending-bal">Baki: RM${b.bal.toLocaleString()}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ── RENDER CHARTS ─────────────────────────────────────────────────────────
+function renderCharts(){
+  const yr=parseInt(document.getElementById("chart-year").value)||new Date().getFullYear();
+  const allYears=[...new Set(ALL_BOOKINGS.map(b=>new Date(b.ci).getFullYear()))].sort();
+  if(!allYears.includes(yr))allYears.push(yr);
+
+  // Destroy old charts
+  Object.values(charts).forEach(c=>c&&c.destroy&&c.destroy());
+  charts={};
+
+  const MONTHS_LABELS=MN_SHORT;
+
+  // ── Helper: get monthly revenue for a year ──
+  function monthlyRevenue(year){
+    const paid=new Array(12).fill(0);
+    const unpaid=new Array(12).fill(0);
+    ALL_BOOKINGS.filter(b=>b.status!=="cancelled"&&new Date(b.ci).getFullYear()===year).forEach(b=>{
+      const m=new Date(b.ci).getMonth();
+      const received=(b.dep||0)+(b.otherPay||0);
+      const outstanding=b.bal>0?b.bal:0;
+      paid[m]+=received;
+      unpaid[m]+=outstanding;
+    });
+    return{paid,unpaid};
+  }
+
+  function monthlyExpenses(year){
+    const byMonth=new Array(12).fill(0);
+    const byCat={};
+    ALL_EXPENSES.filter(e=>toDate(e.date||"")&&new Date(toDate(e.date)).getFullYear()===year).forEach(e=>{
+      const m=new Date(toDate(e.date)).getMonth();
+      const amt=parseNum(e.amount||e.amt||"")||0;
+      byMonth[m]+=amt;
+      const cat=e.category||e.kategori||"Lain-lain";
+      if(!byCat[cat])byCat[cat]=new Array(12).fill(0);
+      byCat[cat][m]+=amt;
+    });
+    return{byMonth,byCat};
+  }
+
+  // ── YoY Revenue chart ──
+  const yoyPaid=allYears.map(y=>monthlyRevenue(y).paid.reduce((a,b)=>a+b,0));
+  const yoyUnpaid=allYears.map(y=>monthlyRevenue(y).unpaid.reduce((a,b)=>a+b,0));
+  const yoyExp=allYears.map(y=>monthlyExpenses(y).byMonth.reduce((a,b)=>a+b,0));
+
+  charts.yoyRev=new Chart(document.getElementById("chart-yoy-revenue"),{
+    type:"bar",
+    data:{labels:allYears.map(String),datasets:[
+      {label:"Diterima",data:yoyPaid,backgroundColor:"#16a34a88",borderColor:"#16a34a",borderWidth:2},
+      {label:"Tertunggak",data:yoyUnpaid,backgroundColor:"#f9731688",borderColor:"#f97316",borderWidth:2},
+      {label:"Perbelanjaan",data:yoyExp,backgroundColor:"#dc262688",borderColor:"#dc2626",borderWidth:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
   });
 
-  // Populate download selectors
-  const from=document.getElementById("dlFrom");
-  const to=document.getElementById("dlTo");
-  from.innerHTML=allMonths.map(m=>`<option value="${m}">${MN[m]}</option>`).join("");
-  to.innerHTML=allMonths.map(m=>`<option value="${m}">${MN[m]}</option>`).join("");
-  to.value=11;
+  const yoyProfit=allYears.map((y,i)=>yoyPaid[i]-yoyExp[i]);
+  charts.yoyProfit=new Chart(document.getElementById("chart-yoy-profit"),{
+    type:"bar",
+    data:{labels:allYears.map(String),datasets:[
+      {label:"Untung Bersih",data:yoyProfit,backgroundColor:yoyProfit.map(v=>v>=0?"#16a34a88":"#dc262688"),borderColor:yoyProfit.map(v=>v>=0?"#16a34a":"#dc2626"),borderWidth:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+  });
+
+  // ── Monthly charts for selected year ──
+  const {paid,unpaid}=monthlyRevenue(yr);
+  const {byMonth:expMonth,byCat}=monthlyExpenses(yr);
+
+  // Stat cards
+  const totalPaid=paid.reduce((a,b)=>a+b,0);
+  const totalUnpaid=unpaid.reduce((a,b)=>a+b,0);
+  const totalExp=expMonth.reduce((a,b)=>a+b,0);
+  const totalBookings=ALL_BOOKINGS.filter(b=>b.status!=="cancelled"&&new Date(b.ci).getFullYear()===yr).length;
+  const avgBookingVal=totalBookings?Math.round((totalPaid+totalUnpaid)/totalBookings):0;
+
+  document.getElementById("stat-cards").innerHTML=`
+    <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val">${totalBookings}</div><div class="stat-lbl">Tempahan ${yr}</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-val">RM ${totalPaid.toLocaleString()}</div><div class="stat-lbl">Hasil Diterima</div></div>
+    <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-val">RM ${totalUnpaid.toLocaleString()}</div><div class="stat-lbl">Baki Tertunggak</div></div>
+    <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-val">RM ${avgBookingVal.toLocaleString()}</div><div class="stat-lbl">Purata / Tempahan</div></div>
+    <div class="stat-card"><div class="stat-icon">💸</div><div class="stat-val">RM ${totalExp.toLocaleString()}</div><div class="stat-lbl">Perbelanjaan</div></div>
+    <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-val">RM ${(totalPaid-totalExp).toLocaleString()}</div><div class="stat-lbl">Untung Bersih</div></div>
+  `;
+
+  // Monthly revenue
+  charts.monthRev=new Chart(document.getElementById("chart-monthly-revenue"),{
+    type:"bar",
+    data:{labels:MONTHS_LABELS,datasets:[
+      {label:"Diterima",data:paid,backgroundColor:"#16a34a88",borderColor:"#16a34a",borderWidth:2},
+      {label:"Tertunggak",data:unpaid,backgroundColor:"#f9731688",borderColor:"#f97316",borderWidth:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{stacked:false},y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+  });
+
+  // Monthly expenses by category
+  const catColors=["#3b82f6","#f97316","#8b5cf6","#10b981","#ec4899","#eab308","#0ea5e9","#22c55e"];
+  const catDatasets=Object.entries(byCat).map(([cat,data],i)=>({
+    label:cat,data,backgroundColor:catColors[i%catColors.length]+"88",borderColor:catColors[i%catColors.length],borderWidth:2
+  }));
+  charts.monthExp=new Chart(document.getElementById("chart-monthly-expenses"),{
+    type:"bar",
+    data:{labels:MONTHS_LABELS,datasets:catDatasets.length?catDatasets:[{label:"Tiada Data",data:new Array(12).fill(0),backgroundColor:"#e2e8f088"}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+  });
+
+  // Monthly profit
+  const profit=paid.map((p,i)=>p-expMonth[i]);
+  charts.monthProfit=new Chart(document.getElementById("chart-monthly-profit"),{
+    type:"bar",
+    data:{labels:MONTHS_LABELS,datasets:[{
+      label:"Untung Bersih",data:profit,
+      backgroundColor:profit.map(v=>v>=0?"#16a34a88":"#dc262688"),
+      borderColor:profit.map(v=>v>=0?"#16a34a":"#dc2626"),borderWidth:2
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{callback:v=>`RM${v.toLocaleString()}`}}}}
+  });
+
+  // Monthly bookings
+  const bookingsByMonth=new Array(12).fill(0);
+  ALL_BOOKINGS.filter(b=>b.status!=="cancelled"&&new Date(b.ci).getFullYear()===yr).forEach(b=>{
+    bookingsByMonth[new Date(b.ci).getMonth()]++;
+  });
+  charts.monthBkgs=new Chart(document.getElementById("chart-monthly-bookings"),{
+    type:"bar",
+    data:{labels:MONTHS_LABELS,datasets:[{label:"Tempahan",data:bookingsByMonth,backgroundColor:"#3b82f688",borderColor:"#3b82f6",borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{ticks:{stepSize:1}}}}
+  });
 }
 
 // ── LOAD DATA ─────────────────────────────────────────────────────────────
-async function fetchCSV(url){
-  const res=await fetch(url+"&t="+Date.now());
-  if(!res.ok)throw new Error(`HTTP ${res.status} for ${url}`);
+async function fetchCSV(tab){
+  const res=await fetch(csv(tab));
+  if(!res.ok)throw new Error(`HTTP ${res.status} (${tab})`);
   return parseCSV(await res.text());
 }
 
 async function loadData(){
-  document.getElementById("root").innerHTML='<div class="loading">⏳ Memuatkan data...</div>';
+  document.getElementById("cal-root").innerHTML='<div class="loading">⏳ Memuatkan data...</div>';
   try{
-    // Load all three sheets in parallel
-    const [bRows, hRows, sRows] = await Promise.all([
-      fetchCSV(CSV_BOOKINGS),
-      fetchCSV(CSV_HOLIDAYS).catch(()=>[]),
-      fetchCSV(CSV_SCHOOLHOLS).catch(()=>[]),
+    const [bRows,hRows,sRows,pRows,eRows,cRows]=await Promise.all([
+      fetchCSV("Bookings"),
+      fetchCSV("Holidays").catch(()=>[]),
+      fetchCSV("SchoolHolidays").catch(()=>[]),
+      fetchCSV("Payments").catch(()=>[]),
+      fetchCSV("Expenses").catch(()=>[]),
+      fetchCSV("Categories").catch(()=>[]),
     ]);
 
-    // Build PH map from Holidays sheet
+    // Holidays
     PH={};
-    hRows.forEach(r=>{
-      const d=toDate(r["date"]||r["tarikh"]||"");
-      const n=(r["name"]||r["nama"]||r["holiday"]||"").trim();
-      if(d&&n)PH[d]=n;
-    });
+    hRows.forEach(r=>{const d=toDate(r.date||r.tarikh||"");const n=(r.name||r.nama||"").trim();if(d&&n)PH[d]=n;});
 
-    // Build SH set from SchoolHolidays sheet
+    // School holidays
     SH=new Set();
     sRows.forEach(r=>{
-      const start=toDate(r["start"]||r["date"]||r["mula"]||"");
-      const end=toDate(r["end"]||r["tamat"]||"");
-      if(start&&end){
-        const d=new Date(start),e=new Date(end);
-        while(d<=e){SH.add(df(d));d.setDate(d.getDate()+1);}
-      } else if(start){
-        SH.add(start);
-      }
+      const s=toDate(r.start||r.date||""),e=toDate(r.end||"");
+      if(s&&e){const d=new Date(s),en=new Date(e);while(d<=en){SH.add(df(d));d.setDate(d.getDate()+1);}}
+      else if(s)SH.add(s);
     });
 
     ALL_BOOKINGS=bRows.map((r,i)=>rowToBooking(r,i+1)).filter(Boolean);
+    ALL_PAYMENTS=pRows;
+    ALL_EXPENSES=eRows;
+    ALL_CATEGORIES=cRows.map(r=>(r.category||r.kategori||"").trim()).filter(Boolean);
+
     renderCalendar();
+    renderPending();
+    populateBookingDropdown();
+    populateCategoryDropdown();
+
+    // Year selectors
+    const years=[...new Set([...ALL_BOOKINGS.map(b=>new Date(b.ci).getFullYear()),new Date().getFullYear()])].sort();
+    const curYear=new Date().getFullYear();
+    ["dlYear","chart-year"].forEach(id=>{
+      const el=document.getElementById(id);
+      el.innerHTML=years.map(y=>`<option value="${y}"${y===curYear?" selected":""}>${y}</option>`).join("");
+    });
+    document.getElementById("dlYear").addEventListener("change",renderCalendar);
+    document.getElementById("chart-year").addEventListener("change",renderCharts);
+    renderCharts();
 
   }catch(e){
-    document.getElementById("root").innerHTML=`<div class="loading" style="color:#fca5a5">
-      ❌ Gagal memuatkan data.<br><br>
-      Pastikan Google Sheet dikongsi "Anyone with the link can view"<br>
-      dan sheet tabs bernama: <b>Bookings</b>, <b>Holidays</b>, <b>SchoolHolidays</b><br><br>
-      <small style="opacity:.7">${e.message}</small>
+    document.getElementById("cal-root").innerHTML=`<div class="loading" style="color:#fca5a5">
+      ❌ Gagal memuatkan data.<br><br>Pastikan Google Sheet dikongsi "Anyone with the link can view".<br><br>
+      <small style="opacity:.7">${e.message}</small></div>`;
+  }
+}
+
+// ── BOOKING DROPDOWN ──────────────────────────────────────────────────────
+function populateBookingDropdown(){
+  const sel=document.getElementById("p-booking");
+  const active=ALL_BOOKINGS.filter(b=>b.status!=="cancelled"&&(b.bal==null||b.bal>0));
+  sel.innerHTML='<option value="">— Pilih tetamu —</option>'+
+    active.map(b=>`<option value="${b.id}">${b.name} (${fmtDate(b.ci)} – ${fmtDate(b.co)})</option>`).join("");
+}
+
+function populateCategoryDropdown(){
+  const sel=document.getElementById("e-cat");
+  sel.innerHTML='<option value="">— Pilih kategori —</option>'+
+    ALL_CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join("");
+}
+
+function onBookingSelected(){
+  const id=parseInt(document.getElementById("p-booking").value);
+  const infoDiv=document.getElementById("p-booking-info");
+  const detailDiv=document.getElementById("p-booking-detail");
+  const historyDiv=document.getElementById("p-payment-history");
+  if(!id){infoDiv.style.display="none";return;}
+  const b=ALL_BOOKINGS.find(x=>x.id===id);
+  if(!b){infoDiv.style.display="none";return;}
+  infoDiv.style.display="block";
+  detailDiv.innerHTML=`<div style="font-weight:700;color:#1e293b;margin-bottom:4px">${b.name}</div>
+    <div style="color:#64748b;font-size:10px">${fmtDate(b.ci)} → ${fmtDate(b.co)}</div>
+    <div style="display:flex;gap:8px;margin-top:6px;font-size:10px">
+      <span style="color:#4c1d95;font-weight:700">Jumlah: RM${(b.tot||0).toLocaleString()}</span>
+      <span style="color:#15803d;font-weight:700">Deposit: RM${(b.dep||0).toLocaleString()}</span>
+      ${b.otherPay>0?`<span style="color:#0369a1;font-weight:700">Bayaran Lain: RM${b.otherPay.toLocaleString()}</span>`:""}
+      <span style="color:#dc2626;font-weight:700">Baki: RM${(b.bal||0).toLocaleString()}</span>
     </div>`;
+
+  // Payment history for this booking
+  const bPayments=ALL_PAYMENTS.filter(p=>{
+    const bid=(p["booking id"]||p["booking_id"]||p["id"]||"").trim();
+    return bid===String(b.id)||bid===b.name;
+  });
+  if(bPayments.length){
+    historyDiv.innerHTML=`<div class="payment-history-title">Sejarah Pembayaran</div>`+
+      bPayments.map(p=>`<div class="payment-item">
+        <div><div style="font-weight:600">${p.note||p.nota||"Pembayaran"}</div>
+        <div class="payment-item-date">${fmtDate(toDate(p.date||p.tarikh||""))}</div></div>
+        <div class="payment-item-amt">RM${parseFloat(p.amount||p.jumlah||0).toLocaleString()}</div>
+      </div>`).join("");
+  } else {
+    historyDiv.innerHTML="";
   }
 }
 
-// ── YEAR SELECTOR ─────────────────────────────────────────────────────────
-function initYearSelector(){
-  const yr=document.getElementById("dlYear");
-  const cur=new Date().getFullYear();
-  for(let y=cur;y<=cur+3;y++){
-    const opt=document.createElement("option");
-    opt.value=y;opt.textContent=y;
-    if(y===cur)opt.selected=true;
-    yr.appendChild(opt);
-  }
-  yr.addEventListener("change",renderCalendar);
-  CURRENT_YEAR=cur;
-}
-
-// ── MODAL ─────────────────────────────────────────────────────────────────
-let editingId=null;
-
-function calcBalance(){
-  const tot=parseFloat(document.getElementById("f-tot").value)||0;
-  const dep=parseFloat(document.getElementById("f-dep").value)||0;
-  const el=document.getElementById("f-bal");
+// ── SAVE FUNCTIONS ────────────────────────────────────────────────────────
+function calcBal(){
+  const tot=parseFloat(document.getElementById("b-tot").value)||0;
+  const dep=parseFloat(document.getElementById("b-dep").value)||0;
+  const el=document.getElementById("b-bal");
   if(!tot&&!dep){el.textContent="—";el.className="bal-display";return;}
   const bal=tot-dep;
   if(bal<=0){el.textContent="RM 0 — Selesai Bayar ✅";el.className="bal-display bal-paid";}
   else{el.textContent=`RM ${bal.toLocaleString()}`;el.className="bal-display bal-owing";}
 }
 
-function openModal(){
-  editingId=null;
-  document.getElementById("modal-title").textContent="Tempahan Baru";
-  ["f-name","f-phone","f-ci","f-co","f-units","f-room","f-tot","f-dep","f-note"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("f-bal").textContent="—";
-  document.getElementById("f-bal").className="bal-display";
-  document.getElementById("f-status").value="Active";
-  document.getElementById("btn-del").style.display="none";
-  document.getElementById("modal").style.display="flex";
+async function apiCall(payload){
+  const res=await fetch(APPS_SCRIPT_URL,{method:"POST",body:JSON.stringify(payload)});
+  const json=await res.json();
+  if(json.status!=="ok")throw new Error(json.message||"Unknown error");
+  return json;
 }
 
-function editBooking(id){
+async function saveNewBooking(){
+  const name=document.getElementById("b-name").value.trim();
+  const ci=document.getElementById("b-ci").value;
+  const co=document.getElementById("b-co").value;
+  if(!name||!ci||!co){alert("Sila isi nama, check-in dan check-out.");return;}
+  if(ci>=co){alert("Check-out mesti selepas check-in.");return;}
+  const tot=parseFloat(document.getElementById("b-tot").value)||"";
+  const dep=parseFloat(document.getElementById("b-dep").value)||0;
+  const bal=tot?Math.max(0,tot-dep):"";
+  showSaving(true);
+  try{
+    await apiCall({action:"append",sheet:"Bookings",rowData:{
+      name,phone:document.getElementById("b-phone").value.trim(),
+      ci,co,
+      units:document.getElementById("b-units").value.trim(),
+      room:document.getElementById("b-room").value.trim(),
+      total:tot,deposit:dep,balance:bal,
+      status:document.getElementById("b-status").value,
+      note:document.getElementById("b-note").value.trim(),
+    }});
+    // Clear form
+    ["b-name","b-phone","b-ci","b-co","b-units","b-room","b-tot","b-dep","b-note"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("b-bal").textContent="—";
+    document.getElementById("b-status").value="Active";
+    await loadData();
+    alert("✅ Tempahan berjaya disimpan!");
+  }catch(e){alert("Gagal: "+e.message);}
+  showSaving(false);
+}
+
+async function savePayment(){
+  const id=parseInt(document.getElementById("p-booking").value);
+  const date=document.getElementById("p-date").value;
+  const amt=parseFloat(document.getElementById("p-amt").value);
+  if(!id||!date||!amt){alert("Sila isi semua maklumat pembayaran.");return;}
+  const b=ALL_BOOKINGS.find(x=>x.id===id);
+  if(!b)return;
+  showSaving(true);
+  try{
+    await apiCall({action:"append",sheet:"Payments",rowData:{
+      "booking id":b.id,
+      "guest name":b.name,
+      date,amount:amt,
+      note:document.getElementById("p-note").value.trim(),
+    }});
+    ["p-date","p-amt","p-note"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("p-booking").value="";
+    document.getElementById("p-booking-info").style.display="none";
+    await loadData();
+    alert("✅ Bayaran berjaya direkod!");
+  }catch(e){alert("Gagal: "+e.message);}
+  showSaving(false);
+}
+
+async function saveExpense(){
+  const date=document.getElementById("e-date").value;
+  const amt=parseFloat(document.getElementById("e-amt").value);
+  const cat=document.getElementById("e-cat").value;
+  if(!date||!amt||!cat){alert("Sila isi tarikh, jumlah dan kategori.");return;}
+  showSaving(true);
+  try{
+    await apiCall({action:"append",sheet:"Expenses",rowData:{
+      date,category:cat,amount:amt,
+      note:document.getElementById("e-note").value.trim(),
+    }});
+    ["e-date","e-amt","e-note"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("e-cat").value="";
+    await loadData();
+    alert("✅ Perbelanjaan berjaya direkod!");
+  }catch(e){alert("Gagal: "+e.message);}
+  showSaving(false);
+}
+
+// ── EDIT MODAL ────────────────────────────────────────────────────────────
+function openEdit(id){
   const b=ALL_BOOKINGS.find(x=>x.id===id);
   if(!b)return;
   editingId=id;
-  document.getElementById("modal-title").textContent="Edit Tempahan";
-  document.getElementById("f-name").value=b.name;
-  document.getElementById("f-phone").value=b.phone||"";
-  document.getElementById("f-ci").value=b.ci;
-  document.getElementById("f-co").value=b.co;
-  document.getElementById("f-units").value=b.units||"";
-  document.getElementById("f-room").value=b.room||"";
-  document.getElementById("f-tot").value=b.tot||"";
-  document.getElementById("f-dep").value=b.dep||"";
-  document.getElementById("f-status").value=b.status.charAt(0).toUpperCase()+b.status.slice(1);
-  document.getElementById("f-note").value=b.note||"";
-  calcBalance();
-  document.getElementById("btn-del").style.display="block";
-  document.getElementById("modal").style.display="flex";
+  document.getElementById("e-name").value=b.name;
+  document.getElementById("e-phone").value=b.phone||"";
+  document.getElementById("e-ci").value=b.ci;
+  document.getElementById("e-co").value=b.co;
+  document.getElementById("e-units").value=b.units||"";
+  document.getElementById("e-room").value=b.room||"";
+  document.getElementById("e-tot").value=b.tot||"";
+  document.getElementById("e-dep").value=b.dep||"";
+  document.getElementById("e-status").value=b.status.charAt(0).toUpperCase()+b.status.slice(1);
+  document.getElementById("e-note").value=b.note||"";
+
+  // Payment history
+  const bPayments=ALL_PAYMENTS.filter(p=>{
+    const bid=(p["booking id"]||p["booking_id"]||p["id"]||"").trim();
+    return bid===String(b.id)||bid===b.name;
+  });
+  const histDiv=document.getElementById("e-payment-history");
+  if(bPayments.length){
+    histDiv.innerHTML=`<div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:6px;margin-top:12px">Sejarah Pembayaran</div>
+      <div style="background:#f8fafc;border-radius:8px;padding:10px">
+        ${bPayments.map(p=>`<div class="payment-item">
+          <div><div style="font-weight:600;font-size:11px">${p.note||p.nota||"Pembayaran"}</div>
+          <div style="font-size:9px;color:#64748b">${fmtDate(toDate(p.date||p.tarikh||""))}</div></div>
+          <div style="font-weight:700;color:#15803d;font-size:11px">RM${parseFloat(p.amount||p.jumlah||0).toLocaleString()}</div>
+        </div>`).join("")}
+      </div>`;
+  } else {histDiv.innerHTML="";}
+
+  document.getElementById("edit-modal").style.display="flex";
 }
 
-function closeModal(){document.getElementById("modal").style.display="none";}
-function closeModalOutside(e){if(e.target.id==="modal")closeModal();}
+function closeEdit(){document.getElementById("edit-modal").style.display="none";}
+function closeEditOutside(e){if(e.target.id==="edit-modal")closeEdit();}
 
-async function saveBooking(){
-  const name=document.getElementById("f-name").value.trim();
-  const ci=document.getElementById("f-ci").value;
-  const co=document.getElementById("f-co").value;
+async function saveEdit(){
+  const name=document.getElementById("e-name").value.trim();
+  const ci=document.getElementById("e-ci").value;
+  const co=document.getElementById("e-co").value;
   if(!name||!ci||!co){alert("Sila isi nama, check-in dan check-out.");return;}
-  if(ci>=co){alert("Check-out mesti selepas check-in.");return;}
-  const tot=parseFloat(document.getElementById("f-tot").value)||"";
-  const dep=parseFloat(document.getElementById("f-dep").value)||"";
-  const bal=tot&&dep?Math.max(0,tot-dep):"";
-  const rowData={
-    name,phone:document.getElementById("f-phone").value.trim(),
-    ci,co,
-    units:document.getElementById("f-units").value.trim(),
-    room:document.getElementById("f-room").value.trim(),
-    total:tot,deposit:dep,balance:bal,
-    status:document.getElementById("f-status").value,
-    note:document.getElementById("f-note").value.trim(),
-  };
+  const b=ALL_BOOKINGS.find(x=>x.id===editingId);
+  if(!b)return;
   showSaving(true);
   try{
-    if(APPS_SCRIPT_URL==="YOUR_APPS_SCRIPT_URL_HERE"){
-      alert("⚠️ Apps Script URL belum dikonfigurasi.\nSila ikut langkah setup.");
-      closeModal();showSaving(false);return;
-    }
-    const b=editingId?ALL_BOOKINGS.find(x=>x.id===editingId):null;
-    const payload={action:editingId?"update":"append",rowData};
-    if(b)payload.rowIndex=b.rowIndex;
-    const res=await fetch(APPS_SCRIPT_URL,{method:"POST",body:JSON.stringify(payload)});
-    const json=await res.json();
-    if(json.status!=="ok")throw new Error(json.message||"Unknown error");
-    closeModal();await loadData();
+    await apiCall({action:"update",sheet:"Bookings",rowIndex:b.rowIndex,rowData:{
+      name,phone:document.getElementById("e-phone").value.trim(),
+      ci,co,
+      units:document.getElementById("e-units").value.trim(),
+      room:document.getElementById("e-room").value.trim(),
+      total:parseFloat(document.getElementById("e-tot").value)||"",
+      deposit:parseFloat(document.getElementById("e-dep").value)||"",
+      status:document.getElementById("e-status").value,
+      note:document.getElementById("e-note").value.trim(),
+    }});
+    closeEdit();
+    await loadData();
   }catch(e){alert("Gagal menyimpan: "+e.message);}
   showSaving(false);
 }
 
-async function deleteBooking(){
+async function cancelBooking(){
   if(!editingId)return;
   if(!confirm("Batalkan tempahan ini?"))return;
   const b=ALL_BOOKINGS.find(x=>x.id===editingId);
   if(!b)return;
   showSaving(true);
   try{
-    if(APPS_SCRIPT_URL==="YOUR_APPS_SCRIPT_URL_HERE"){
-      alert("⚠️ Apps Script URL belum dikonfigurasi.");
-      closeModal();showSaving(false);return;
-    }
-    const res=await fetch(APPS_SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"cancel",rowIndex:b.rowIndex})});
-    const json=await res.json();
-    if(json.status!=="ok")throw new Error(json.message||"Unknown error");
-    closeModal();await loadData();
-  }catch(e){alert("Gagal membatalkan: "+e.message);}
+    await apiCall({action:"cancel",sheet:"Bookings",rowIndex:b.rowIndex});
+    closeEdit();await loadData();
+  }catch(e){alert("Gagal: "+e.message);}
   showSaving(false);
 }
 
-function showSaving(v){document.getElementById("saving-overlay").style.display=v?"flex":"none";}
+// ── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(i){
+  document.querySelectorAll(".tab").forEach((t,j)=>t.classList.toggle("active",i===j));
+  document.querySelectorAll(".tab-content").forEach((t,j)=>t.classList.toggle("active",i===j));
+  if(i===3)renderCharts();
+}
 
 // ── DOWNLOADS ─────────────────────────────────────────────────────────────
 async function downloadMonths(){
@@ -752,8 +1193,8 @@ async function downloadMonths(){
 }
 
 async function downloadOutstanding(){
-  const el=document.getElementById("out-panel");
-  if(!el){alert("Tiada baki tertunggak.");return;}
+  const el=document.getElementById("pending-panel");
+  if(!el)return;
   showSaving(true);
   const canvas=await html2canvas(el,{scale:2,backgroundColor:"#fff",useCORS:true,logging:false});
   const a=document.createElement("a");
@@ -762,8 +1203,12 @@ async function downloadOutstanding(){
   showSaving(false);
 }
 
+function showSaving(v){document.getElementById("saving-overlay").style.display=v?"flex":"none";}
+
 // ── INIT ──────────────────────────────────────────────────────────────────
-initYearSelector();
+// Set today's date as default for forms
+const today=df(new Date());
+["p-date","e-date"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today;});
 loadData();
 </script>
 </body>
