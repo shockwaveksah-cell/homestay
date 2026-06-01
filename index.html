@@ -1081,7 +1081,7 @@ async function saveNewBooking(){
       ci,co,
       units:document.getElementById("b-units").value.trim(),
       room:document.getElementById("b-room").value.trim(),
-      total:tot,deposit:dep,balance:bal,
+      total:tot,deposit:dep,
       status:document.getElementById("b-status").value,
       note:document.getElementById("b-note").value.trim(),
     }});
@@ -1191,7 +1191,7 @@ async function saveEdit(){
       ci,co,
       units:document.getElementById("e-units").value.trim(),
       room:document.getElementById("e-room").value.trim(),
-      total:parseFloat(document.getElementById("e-tot").value)||"",
+      total:document.getElementById("e-tot").value!==""?parseFloat(document.getElementById("e-tot").value)||0:"",
       deposit:document.getElementById("e-dep").value!==""?parseFloat(document.getElementById("e-dep").value):"",
       status:document.getElementById("e-status").value,
       note:document.getElementById("e-note").value.trim(),
