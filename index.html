@@ -181,6 +181,11 @@ select option{background:#1e3a5f;color:#fff}
 .btn-full{flex:1}
 .btn-del{background:#fff;color:#dc2626;border:1.5px solid #dc2626;font-size:11px;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit}
 .btn-del:hover{background:#fef2f2}
+.unit-btn{padding:10px 4px;border-radius:8px;border:2px solid #e2e8f0;background:#f8fafc;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .15s;color:#475569}
+.unit-btn.available{border-color:#16a34a;background:#f0fdf4;color:#15803d}
+.unit-btn.selected{border-color:#2563eb;background:#2563eb;color:#fff}
+.unit-btn.taken{border-color:#fecaca;background:#fef2f2;color:#fca5a5;cursor:not-allowed;text-decoration:line-through}
+.unit-btn.taken-selected{border-color:#dc2626;background:#fee2e2;color:#dc2626;cursor:not-allowed}
 
 /* Payment history in modal */
 .payment-history{background:#f8fafc;border-radius:8px;padding:10px;margin-top:8px}
@@ -252,22 +257,23 @@ select option{background:#1e3a5f;color:#fff}
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Check-in *</label>
-        <input id="b-ci" class="form-input" type="date"/>
+        <input id="b-ci" class="form-input" type="date" onchange="onDateChange('b')"/>
       </div>
       <div class="form-group">
         <label class="form-label">Check-out *</label>
-        <input id="b-co" class="form-input" type="date"/>
+        <input id="b-co" class="form-input" type="date" onchange="onDateChange('b')"/>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Bil. Unit</label>
-        <input id="b-units" class="form-input" type="number" min="1" max="4" placeholder="1–4"/>
+    <div class="form-group" id="b-unit-group" style="display:none">
+      <label class="form-label">Pilih Unit *</label>
+      <div id="b-unit-warning" style="display:none;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;padding:8px 12px;font-size:11px;color:#dc2626;font-weight:600;margin-bottom:8px"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <button type="button" id="b-unit-H1" class="unit-btn" onclick="toggleUnit('b','H1')">H1</button>
+        <button type="button" id="b-unit-H2" class="unit-btn" onclick="toggleUnit('b','H2')">H2</button>
+        <button type="button" id="b-unit-H3" class="unit-btn" onclick="toggleUnit('b','H3')">H3</button>
+        <button type="button" id="b-unit-H4" class="unit-btn" onclick="toggleUnit('b','H4')">H4</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">No. Unit</label>
-        <input id="b-room" class="form-input" type="text" placeholder="cth: H1-H4"/>
-      </div>
+      <div id="b-unit-summary" style="font-size:10px;color:#64748b;margin-top:6px"></div>
     </div>
     <div class="form-group">
       <label class="form-label">Jumlah Caj (RM) *</label>
@@ -430,22 +436,23 @@ select option{background:#1e3a5f;color:#fff}
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Check-in *</label>
-          <input id="e-ci" class="form-input" type="date"/>
+          <input id="e-ci" class="form-input" type="date" onchange="onDateChange('e')"/>
         </div>
         <div class="form-group">
           <label class="form-label">Check-out *</label>
-          <input id="e-co" class="form-input" type="date"/>
+          <input id="e-co" class="form-input" type="date" onchange="onDateChange('e')"/>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Bil. Unit</label>
-          <input id="e-units" class="form-input" type="number" min="1" max="4"/>
+      <div class="form-group">
+        <label class="form-label">Pilih Unit *</label>
+        <div id="e-unit-warning" style="display:none;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;padding:8px 12px;font-size:11px;color:#dc2626;font-weight:600;margin-bottom:8px"></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+          <button type="button" id="e-unit-H1" class="unit-btn" onclick="toggleUnit('e','H1')">H1</button>
+          <button type="button" id="e-unit-H2" class="unit-btn" onclick="toggleUnit('e','H2')">H2</button>
+          <button type="button" id="e-unit-H3" class="unit-btn" onclick="toggleUnit('e','H3')">H3</button>
+          <button type="button" id="e-unit-H4" class="unit-btn" onclick="toggleUnit('e','H4')">H4</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">No. Unit</label>
-          <input id="e-room" class="form-input" type="text"/>
-        </div>
+        <div id="e-unit-summary" style="font-size:10px;color:#64748b;margin-top:6px"></div>
       </div>
       <div class="form-group">
         <label class="form-label">Jumlah Caj (RM)</label>
@@ -520,6 +527,36 @@ function toDate(v){
   const d=new Date(v);return isNaN(d)?"":df(d);
 }
 function parseNum(v){if(v===''||v===null||v===undefined)return null;const n=parseFloat(v);return isNaN(n)?null:n;}
+
+// Parse room string to array of unit names e.g. "H1&H2" -> ["H1","H2"]
+function parseUnits(room){
+  if(!room)return[];
+  const r=room.trim().toUpperCase();
+  const ALL=["H1","H2","H3","H4"];
+  // H1-H4 range
+  const range=r.match(/H(\d)-H(\d)/);
+  if(range){
+    const s=parseInt(range[1]),e=parseInt(range[2]);
+    return ALL.filter(u=>parseInt(u[1])>=s&&parseInt(u[1])<=e);
+  }
+  // Individual units separated by & or ,
+  const parts=r.split(/[&,\s]+/).filter(Boolean);
+  return parts.filter(p=>ALL.includes(p));
+}
+
+// Get occupied units for a date range, optionally excluding a booking id
+function getOccupiedUnits(ci,co,excludeId){
+  const occupied=new Set();
+  ALL_BOOKINGS.filter(b=>{
+    if(b.status==="cancelled")return false;
+    if(excludeId&&b.id===excludeId)return false;
+    // Overlap: b.ci < co AND b.co > ci
+    return b.ci<co&&b.co>ci;
+  }).forEach(b=>{
+    parseUnits(b.room||b.u||"").forEach(u=>occupied.add(u));
+  });
+  return occupied;
+}
 
 // ── CSV PARSE ─────────────────────────────────────────────────────────────
 function parseCSV(text){
@@ -1048,6 +1085,85 @@ function onBookingSelected(){
 }
 
 // ── SAVE FUNCTIONS ────────────────────────────────────────────────────────
+// ── UNIT SELECTION ───────────────────────────────────────────────────────
+const ALL_UNITS=["H1","H2","H3","H4"];
+let bSelectedUnits=new Set(); // for new booking form
+let eSelectedUnits=new Set(); // for edit form
+
+function updateUnitButtons(prefix, ci, co, excludeId){
+  const occupied=ci&&co?getOccupiedUnits(ci,co,excludeId):new Set();
+  ALL_UNITS.forEach(u=>{
+    const btn=document.getElementById(`${prefix}-unit-${u}`);
+    if(!btn)return;
+    const isTaken=occupied.has(u);
+    const sel=prefix==="b"?bSelectedUnits:eSelectedUnits;
+    const isSelected=sel.has(u);
+    btn.className="unit-btn";
+    if(isTaken&&isSelected){btn.classList.add("taken-selected");}
+    else if(isTaken){btn.classList.add("taken");}
+    else if(isSelected){btn.classList.add("selected");}
+    else{btn.classList.add("available");}
+    // Show taken label
+    btn.textContent=isTaken?`${u} ✗`:`${u}`;
+  });
+  updateUnitSummary(prefix, occupied);
+}
+
+function updateUnitSummary(prefix, occupied){
+  const sel=prefix==="b"?bSelectedUnits:eSelectedUnits;
+  const summaryEl=document.getElementById(`${prefix}-unit-summary`);
+  const warnEl=document.getElementById(`${prefix}-unit-warning`);
+  if(!summaryEl)return;
+  if(sel.size===0){
+    summaryEl.textContent="";
+  } else {
+    summaryEl.textContent=`Dipilih: ${[...sel].sort().join(", ")} (${sel.size} unit)`;
+  }
+  // Check if all 4 are occupied
+  if(occupied&&occupied.size>=4){
+    warnEl.textContent="⛔ Semua 4 unit telah ditempah untuk tarikh ini. Tempahan tidak boleh dibuat.";
+    warnEl.style.display="block";
+  } else if(occupied&&occupied.size>0){
+    const takenList=[...occupied].sort().join(", ");
+    warnEl.textContent=`⚠️ Unit ${takenList} telah ditempah untuk tarikh ini.`;
+    warnEl.style.display="block";
+  } else {
+    warnEl.style.display="none";
+  }
+}
+
+function toggleUnit(prefix, unit){
+  const occupied=getOccupiedUnitsForForm(prefix);
+  if(occupied.has(unit))return; // can't select taken unit
+  const sel=prefix==="b"?bSelectedUnits:eSelectedUnits;
+  if(sel.has(unit)){sel.delete(unit);}else{sel.add(unit);}
+  const ci=document.getElementById(`${prefix==="b"?"b-ci":"e-ci"}`).value;
+  const co=document.getElementById(`${prefix==="b"?"b-co":"e-co"}`).value;
+  const excl=prefix==="e"?editingId:null;
+  updateUnitButtons(prefix,ci,co,excl);
+}
+
+function getOccupiedUnitsForForm(prefix){
+  const ci=document.getElementById(prefix==="b"?"b-ci":"e-ci").value;
+  const co=document.getElementById(prefix==="b"?"b-co":"e-co").value;
+  const excl=prefix==="e"?editingId:null;
+  return ci&&co?getOccupiedUnits(ci,co,excl):new Set();
+}
+
+function onDateChange(prefix){
+  const ci=document.getElementById(prefix==="b"?"b-ci":"e-ci").value;
+  const co=document.getElementById(prefix==="b"?"b-co":"e-co").value;
+  const excl=prefix==="e"?editingId:null;
+  if(prefix==="b"){
+    const grp=document.getElementById("b-unit-group");
+    if(ci&&co&&ci<co){grp.style.display="block";}else{grp.style.display="none";return;}
+    // Clear selections that are now taken
+    const occupied=getOccupiedUnits(ci,co,null);
+    bSelectedUnits=new Set([...bSelectedUnits].filter(u=>!occupied.has(u)));
+  }
+  updateUnitButtons(prefix,ci,co,excl);
+}
+
 function calcBal(){
   const tot=parseFloat(document.getElementById("b-tot").value)||0;
   const dep=document.getElementById("b-dep").value!==""?parseFloat(document.getElementById("b-dep").value)||0:"";
@@ -1071,6 +1187,11 @@ async function saveNewBooking(){
   const co=document.getElementById("b-co").value;
   if(!name||!ci||!co){alert("Sila isi nama, check-in dan check-out.");return;}
   if(ci>=co){alert("Check-out mesti selepas check-in.");return;}
+  // Validate unit selection
+  if(bSelectedUnits.size===0){alert("Sila pilih sekurang-kurangnya 1 unit.");return;}
+  const occupied=getOccupiedUnits(ci,co,null);
+  if(occupied.size>=4){alert("⛔ Semua 4 unit telah ditempah untuk tarikh ini. Tempahan tidak boleh dibuat.");return;}
+  const selectedArr=[...bSelectedUnits].sort();
   const tot=parseFloat(document.getElementById("b-tot").value)||"";
   const dep=document.getElementById("b-dep").value!==""?parseFloat(document.getElementById("b-dep").value)||0:"";
   const bal=tot?Math.max(0,tot-dep):"";
@@ -1079,14 +1200,16 @@ async function saveNewBooking(){
     await apiCall({action:"append",sheet:"Bookings",rowData:{
       name,phone:document.getElementById("b-phone").value.trim(),
       ci,co,
-      units:document.getElementById("b-units").value.trim(),
-      room:document.getElementById("b-room").value.trim(),
+      units:selectedArr.length,
+      room:selectedArr.join(","),
       total:tot,deposit:dep,
       status:document.getElementById("b-status").value,
       note:document.getElementById("b-note").value.trim(),
     }});
     // Clear form
-    ["b-name","b-phone","b-ci","b-co","b-units","b-room","b-tot","b-dep","b-note"].forEach(id=>document.getElementById(id).value="");
+    ["b-name","b-phone","b-ci","b-co","b-tot","b-dep","b-note"].forEach(id=>document.getElementById(id).value="");
+    bSelectedUnits=new Set();
+    document.getElementById("b-unit-group").style.display="none";
     document.getElementById("b-bal").textContent="—";
     document.getElementById("b-status").value="Active";
     await loadData();
@@ -1147,8 +1270,8 @@ function openEdit(id){
   document.getElementById("e-phone").value=b.phone||"";
   document.getElementById("e-ci").value=b.ci;
   document.getElementById("e-co").value=b.co;
-  document.getElementById("e-units").value=b.units||"";
-  document.getElementById("e-room").value=b.room||"";
+  // Parse existing units
+  eSelectedUnits=new Set(parseUnits(b.room||""));
   document.getElementById("e-tot").value=b.tot||"";
   document.getElementById("e-dep").value=b.dep||"";
   document.getElementById("e-status").value=b.status.charAt(0).toUpperCase()+b.status.slice(1);
@@ -1171,6 +1294,8 @@ function openEdit(id){
       </div>`;
   } else {histDiv.innerHTML="";}
 
+  // Update unit buttons after modal opens
+  setTimeout(()=>updateUnitButtons("e",b.ci,b.co,b.id),50);
   document.getElementById("edit-modal").style.display="flex";
 }
 
@@ -1182,6 +1307,9 @@ async function saveEdit(){
   const ci=document.getElementById("e-ci").value;
   const co=document.getElementById("e-co").value;
   if(!name||!ci||!co){alert("Sila isi nama, check-in dan check-out.");return;}
+  const occupied=getOccupiedUnits(ci,co,editingId);
+  if(occupied.size>=4){alert("⛔ Semua 4 unit telah ditempah untuk tarikh ini. Tempahan tidak boleh dibuat.");return;}
+  if(eSelectedUnits.size===0){alert("Sila pilih sekurang-kurangnya 1 unit.");return;}
   const b=ALL_BOOKINGS.find(x=>x.id===editingId);
   if(!b)return;
   showSaving(true);
@@ -1189,8 +1317,8 @@ async function saveEdit(){
     await apiCall({action:"update",sheet:"Bookings",rowIndex:b.rowIndex,rowData:{
       name,phone:document.getElementById("e-phone").value.trim(),
       ci,co,
-      units:document.getElementById("e-units").value.trim(),
-      room:document.getElementById("e-room").value.trim(),
+      units:[...eSelectedUnits].sort().length||"",
+      room:[...eSelectedUnits].sort().join(","),
       total:document.getElementById("e-tot").value!==""?parseFloat(document.getElementById("e-tot").value)||0:"",
       deposit:document.getElementById("e-dep").value!==""?parseFloat(document.getElementById("e-dep").value):"",
       status:document.getElementById("e-status").value,
